@@ -1,1 +1,5 @@
+blinker
 Flask
+Flask-Dance
+Flask-Login
+Flask-SQLAlchemy
