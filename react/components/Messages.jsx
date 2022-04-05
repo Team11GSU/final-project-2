@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
-
+import { useParams } from 'react-router-dom';
+import { Box, Card, CardBody, CardHeader, CardFooter } from 'grommet'
+// to be replaced with Grommet components later
 
 function Messages({ socket }) {
+    const params = useParams();
     const [messages, setMessages] = useState({});
+
 
     useEffect(() => {
         const messageListener = (message) => {
@@ -24,7 +28,7 @@ function Messages({ socket }) {
 
         socket.on('message', messageListener);
         // socket.on('deleteMessage', deleteMessageListener);
-        socket.emit('getMessages');
+        socket.emit('getMessages', params.projectID);
 
         return () => {
             socket.off('message', messageListener);
@@ -33,22 +37,21 @@ function Messages({ socket }) {
     }, [socket]);
 
     return (
-        <div className="message-list">
+        <Box>
             {[...Object.values(messages)]
                 .sort((a, b) => a.time - b.time)
                 .map((message) => (
-                    <div
+                    <Card
                         key={message.id}
-                        className="message-container"
                         title={`Sent at ${new Date(message.time).toLocaleTimeString()}`}
                     >
-                        <span className="user">{message.user}:</span>
-                        <span className="message">{message.value}</span>
-                        <span className="date">{new Date(message.time).toLocaleTimeString()}</span>
-                    </div>
+                        <CardHeader><span className="user">{message.user}:</span></CardHeader>
+                        <CardBody><span className="message">{message.value}</span></CardBody>
+                        <CardFooter><span className="date">{new Date(message.time).toLocaleTimeString()}</span></CardFooter>
+                    </Card>
                 ))
             }
-        </div>
+        </Box>
     );
 }
 

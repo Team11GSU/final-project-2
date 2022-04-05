@@ -1,17 +1,17 @@
 import os
-from datetime import datetime, timezone
-from uuid import uuid4
+
 from flask import Flask, render_template
 # from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager
 from werkzeug.exceptions import HTTPException
-from flask_socketio import send, emit, SocketIO
+
 from dotenv import find_dotenv, load_dotenv
 
 from server.models import db, User
 from server.google_endpoint import google_blueprint
 from server.frontend import frontend
 from server.api import api
+from server.sockets_api import socketio
 
 load_dotenv(find_dotenv())
 
@@ -64,7 +64,7 @@ def load_user(user_id):
 
 
 db.init_app(app)
-
+socketio.init_app(app)
 
 # # pylint: disable=unused-argument
 # @app.teardown_appcontext
@@ -79,43 +79,7 @@ db.init_app(app)
 #     "to help prevent pool overflow"
 #     db.session.remove()
 
-socketio = SocketIO(app)
 
-# Unfortunately the Chat code has to do here only
-
-messages = [
-    {
-        "id": str(uuid4()),
-        "time": int(datetime.now(tz=timezone.utc).timestamp() * 1000),
-        "user": "demo user",
-        "value": "Message 1"
-    }
-]
-
-@socketio.on('message')
-def handle_message(message):
-    "handle"
-    new_message = {
-        "id": str(uuid4()),
-        "time": int(datetime.now(tz=timezone.utc).timestamp() * 1000),
-        "user": current_user.name,
-        "value": message
-    }
-    messages.append(new_message)
-    print(messages, flush=True)
-    emit('message', new_message, broadcast=True, json=True)
-
-@socketio.on('getMessages')
-def get_messages():
-    "get"
-    print("here", flush=True)
-    for message in messages:
-        emit('message', message, broadcast=True, json=True)
-
-# @socketio.on('deleteMessage')
-# def handle_delete_message(message):
-#     print(message, flush=True)
-#     send(message) 
 
 with app.app_context():
     db.create_all()
