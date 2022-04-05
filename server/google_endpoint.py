@@ -21,6 +21,8 @@ google_blueprint = make_google_blueprint(
 
 @oauth_authorized.connect_via(google_blueprint)
 def google_logged_in(blueprint, token):
+    "google endpoint"
+    db.session.begin()
     resp = blueprint.session.get("/oauth2/v2/userinfo")
     user_info = resp.json()
     user_id = str(user_info["id"])
