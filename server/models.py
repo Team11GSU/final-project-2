@@ -11,6 +11,8 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(256))
 
 
+
+
 class OAuth(OAuthConsumerMixin, db.Model):
     provider_user_id = db.Column(db.String(256), unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
