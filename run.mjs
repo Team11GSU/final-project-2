@@ -20,6 +20,6 @@ if (argv.prod) {
   process.env.FLASK_ENV = 'development';
   await Promise.all([
     $`npx parcel watch --dist-dir ./static/js`,
-    $`flask run`,
+    $`python3 app.py`,
   ]);
 }
