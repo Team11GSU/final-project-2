@@ -1,6 +1,5 @@
 .env
 .DS_Store
-.vscode/
 node_modules/
 .parcel-cache/
 static/js/
