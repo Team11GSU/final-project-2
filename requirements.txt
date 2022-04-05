@@ -3,3 +3,7 @@ Flask
 Flask-Dance
 Flask-Login
 Flask-SQLAlchemy
+flask-socketio
+python-dotenv
+psycopg2-binary
+gevent-websocket
