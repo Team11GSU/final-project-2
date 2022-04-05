@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, render_template
+
 # from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from werkzeug.exceptions import HTTPException
@@ -48,7 +49,7 @@ login_manager.login_view = "frontend.index"
 def load_user(user_id):
     "loading user for flask-login"
     # pylint: disable=no-member
-#     return db.session.get(User, user_id)
+    #     return db.session.get(User, user_id)
     return User.query.get(int(user_id))
 
 
@@ -80,16 +81,20 @@ socketio.init_app(app)
 #     db.session.remove()
 
 
-
 with app.app_context():
     db.create_all()
-# do NOT uncomment 
+# do NOT uncomment
 # app.run(
 #     debug=True,
 #     host=os.getenv("IP", "0.0.0.0"),
 #     port=int(os.getenv("PORT", "8080")),
 # )
 
-if __name__ == '__main__':
-    print("probably on http://127.0.0.1:5000/")
-    socketio.run(app)
+if __name__ == "__main__":
+    print("probably on http://127.0.0.1:8080/")
+    socketio.run(
+        app,
+        debug=True,
+        host=os.getenv("IP", "0.0.0.0"),
+        port=int(os.getenv("PORT", "8080")),
+    )
