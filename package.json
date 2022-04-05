@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node run.mjs"
+    "dev": "node run.mjs",
+    "build": "parcel build"
   },
   "author": "",
   "source": "./react/index.jsx",
