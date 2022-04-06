@@ -40,7 +40,9 @@ def google_logged_in(blueprint, token):
         db.session.commit()
         login_user(oauth.user)
     if not oauth.user:
-        user = User(email=user_info["email"], name=user_info["name"])
+        user = User.query.filter_by(email=user_info["email"]).first()
+        if not user:
+            user = User(email=user_info["email"], name=user_info["name"])
         oauth.user = user
         db.session.add_all([user, oauth])
         db.session.commit()
