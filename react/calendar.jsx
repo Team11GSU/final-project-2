@@ -1,31 +1,30 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 
 export default function Calendar() {
-    const [title, setTitle] = useState([]);
-    const [sDate, setSDate] = useState([]);
-    const [eDate, setEDate] = useState([]);
-    const [description, setDescription] = useState([]);
-    const [category, setCategory] = useState([]);
+    const params = useParams();
+    const [data, setData] = useState([])
+    const [title, setTitle] = useState("");
+    const [sDate, setSDate] = useState("");
+    const [eDate, setEDate] = useState("");
+    const [description, setDescription] = useState("");
+    const [category, setCategory] = useState("");
 
     useEffect(() => {
-        fetch('/<projectID>/getEvent',
-            {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            }).then((response) => response.json()).then((data) => {
-                setTitle(data.title);
-                setSDate(data.sDate);
-                console.log(data)
+        fetch(`/${params.projectID}/getEvent`)
+            .then((response) => response.json())
+            .then((cdata) => {
+                console.log(cdata)
+                setData(cdata.map(elem => { return { title: elem.title, date: elem.sDate } }))
             })
     }, []);
 
-    function handleSubmit() {
-        fetch('/<projectID>/addEvent', {
+    function handleSubmit(e) {
+        e.preventDefault()
+        fetch(`/${params.projectID}/addEvent`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -33,14 +32,18 @@ export default function Calendar() {
             body: JSON.stringify(
                 {
                     title: title,
-                    sDate: sDate
+                    sDate: sDate,
+                    eDate: eDate,
+                    category: category,
+                    description: description,
                 }
             ),
-        }).then((response) => response.json()).then((data) => {
-            console.log(data)
-            console.log('Data goes here')
         })
-        window.alert('Event added!');
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+                setData(data.map(elem => { return { title: elem.title, date: elem.sDate } }))
+            })
     }
 
     return (
@@ -52,9 +55,7 @@ export default function Calendar() {
                 initialView="dayGridMonth"
                 height={550}
                 aspectRatio={1}
-                events={[
-                    { title: 'Test Event', date: '2022-04-15' }
-                ]}
+                events={data}
             />
 
             <form onSubmit={handleSubmit}>

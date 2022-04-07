@@ -65,6 +65,7 @@ class Event(db.Model):
     category = db.Column(db.String(8), nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
     project = db.relationship("Project", backref=db.backref("events"))
+    user = db.Column(db.String(256))
 
 
 class OAuth(OAuthConsumerMixin, db.Model):
