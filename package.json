@@ -21,6 +21,8 @@
     "parcel": "2.3.2"
   },
   "dependencies": {
+    "@fullcalendar/daygrid": "^5.10.1",
+    "@fullcalendar/react": "^5.10.1",
     "grommet": "^2.21.0",
     "grommet-icons": "^4.7.0",
     "react": "^17.0.2",
