@@ -55,6 +55,18 @@ class Message(db.Model):
     project = db.relationship("Project", backref=db.backref("messages"))
 
 
+class Event(db.Model):
+    "calendar model"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(300), nullable=True)
+    sDate = db.Column(db.String(10), nullable=False)
+    eDate = db.Column(db.String(10), nullable=True)
+    category = db.Column(db.String(8), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
+    project = db.relationship("Project", backref=db.backref("events"))
+
+
 class OAuth(OAuthConsumerMixin, db.Model):
     "oauth table"
     provider_user_id = db.Column(db.String(256), unique=True)
