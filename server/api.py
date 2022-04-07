@@ -70,11 +70,11 @@ def calendar(projectID):
 @api.route("/<projectID>/addEvent", methods=["POST"])
 def add_event(projectID):
     if flask.request.method == "POST":
-        event_title = flask.request.form.get("title")
-        event_sdate = flask.request.form.get("sDate")
-        event_edate = flask.request.form.get("eDate")
-        event_desc = flask.request.form.get("description")
-        event_cat = flask.request.form.get("category")
+        event_title = flask.request.json.get("title")
+        event_sdate = flask.request.json.get("sDate")
+        event_edate = flask.request.json.get("eDate")
+        event_desc = flask.request.json.get("description")
+        event_cat = flask.request.json.get("category")
         new_event = Event(
             title=event_title,
             sDate=event_sdate,
@@ -84,6 +84,4 @@ def add_event(projectID):
         )
         db.session.add(new_event)
         db.session.commit()
-
-    return
 
