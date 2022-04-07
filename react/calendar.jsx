@@ -25,7 +25,7 @@ export default function Calendar() {
     }, []);
 
     function handleSubmit() {
-        fetch('/<projectID>/get_event', {
+        fetch('/<projectID>/addEvent', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
