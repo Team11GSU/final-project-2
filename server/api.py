@@ -1,13 +1,14 @@
-from flask import Blueprint, jsonify, redirect
+from flask import Blueprint, jsonify, redirect, request
 from flask_login import current_user, logout_user
 from flask_dance.contrib.google import google
-from server.models import Project, db
+from server.models import Project, db, Event
 
-# when adding your API route, use the format /<projectID>/your-endpoint
-# Then in function definition use def endpoint(projectID)
+# when adding your API route, use the format /<project_id>/your-endpoint
+# Then in function definition use def endpoint(project_id)
 # query for the particular project and then use current_user and project ID to add
 
 api = Blueprint("api", __name__)
+
 
 @api.route("/userdata")
 def userdata():
@@ -17,9 +18,7 @@ def userdata():
     if current_user.is_authenticated and google.authorized:
         google_data = google.get(user_info_endpoint).json()
         db.session.begin()
-        project = Project.query.filter_by(
-            name="dummy"
-        ).first()
+        project = Project.query.filter_by(name="dummy").first()
         # this code creates a dummmy project if it doesn't exit
         # and it adds new users to project if they aren't in
         if not project:
@@ -30,14 +29,16 @@ def userdata():
         if not member:
             print("here", flush=True)
             project.members.append(current_user)
-        user_projects = list(map(lambda x:x.id, current_user.projects))
-        print(project.id, project.name, project.members, current_user.projects, flush=True)
+        user_projects = list(map(lambda x: x.id, current_user.projects))
+        print(
+            project.id, project.name, project.members, current_user.projects, flush=True
+        )
         db.session.commit()
         return jsonify(
             logged_in=True,
             google_data=google_data,
             fetch_url=google.base_url + user_info_endpoint,
-            user_projects=user_projects
+            user_projects=user_projects,
         )
     return jsonify(logged_in=False)
 
@@ -48,3 +49,58 @@ def logout():
     logout_user()
     return redirect("/")
 
+
+@api.route("/<project_id>/getEvent")
+def calendar(project_id):
+    "retrieve"
+    events = Event.query.filter_by(project_id=int(project_id)).all()
+    return jsonify(
+        [
+            {
+                "title": event.title,
+                "description": event.description,
+                "sDate": event.sDate,
+                "eDate": event.eDate,
+                "category": event.category,
+                "user": event.user,
+            }
+            for event in events
+        ]
+    )
+
+
+@api.route("/<project_id>/addEvent", methods=["POST"])
+def add_event(project_id):
+    "add event"
+    if request.method == "POST":
+        db.session.begin()
+        event_title = request.json.get("title")
+        event_sdate = request.json.get("sDate")
+        event_edate = request.json.get("eDate")
+        event_desc = request.json.get("description")
+        event_cat = request.json.get("category")
+        new_event = Event(
+            title=event_title,
+            sDate=event_sdate,
+            eDate=event_edate,
+            description=event_desc,
+            category=event_cat,
+            user=current_user.name,
+            project_id=int(project_id),
+        )
+        db.session.add(new_event)
+        db.session.commit()
+    events = Event.query.filter_by(project_id=int(project_id)).all()
+    return jsonify(
+        [
+            {
+                "title": event.title,
+                "description": event.description,
+                "sDate": event.sDate,
+                "eDate": event.eDate,
+                "category": event.category,
+                "user": event.user,
+            }
+            for event in events
+        ]
+    )
