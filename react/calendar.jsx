@@ -11,14 +11,14 @@ export default function Calendar() {
     const [sDate, setSDate] = useState("");
     const [eDate, setEDate] = useState("");
     const [description, setDescription] = useState("");
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState("Event");
 
     useEffect(() => {
         fetch(`/${params.projectID}/getEvent`)
             .then((response) => response.json())
             .then((cdata) => {
                 console.log(cdata)
-                setData(cdata.map(elem => { return { title: elem.title, date: elem.sDate } }))
+                setData(cdata.map(elem => { return { title: elem.title, start: elem.sDate, end: elem.eDate, description: elem.description, category: elem.category } }))
             })
     }, []);
 
@@ -42,9 +42,18 @@ export default function Calendar() {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data)
-                setData(data.map(elem => { return { title: elem.title, date: elem.sDate } }))
+                window.alert('New Event Saved!');
+                setData(data.map(elem => { return { title: elem.title, start: elem.sDate, end: elem.eDate, description: elem.description, category: elem.category } }))
             })
+        setTitle("");
+        setSDate("");
+        setEDate("");
+        setDescription("");
+        setCategory("Event");
+
     }
+
+
 
     return (
 
@@ -55,15 +64,25 @@ export default function Calendar() {
                 initialView="dayGridMonth"
                 height={550}
                 aspectRatio={1}
+                displayEventEnd={true}
                 events={data}
+                eventClick={
+                    function (info) {
+                        alert('Details: \n Title: ' + info.event.title
+                            + '\n Description: ' + info.event.extendedProps.description
+                            + '\n Start Date: ' + info.event.start
+                            + '\n End Date: ' + info.event.end
+                            + '\n Category: ' + info.event.extendedProps.category);
+                    }
+                }
             />
 
             <form onSubmit={handleSubmit}>
                 <label>Title: </label>
-                <input type="text" value={title} placeholder="Enter Title" onChange={(e) => setTitle(e.target.value)} /><br></br>
+                <input type="text" value={title} placeholder="Enter Title" required onChange={(e) => setTitle(e.target.value)} /><br></br>
 
                 <label>Start Date: </label>
-                <input type="text" value={sDate} placeholder="YYYY-MM-DD" onChange={(e) => setSDate(e.target.value)} /><br></br>
+                <input type="text" value={sDate} placeholder="YYYY-MM-DD" required onChange={(e) => setSDate(e.target.value)} /><br></br>
 
                 <label>End Date: </label>
                 <input type="text" value={eDate} placeholder="YYYY-MM-DD" onChange={(e) => setEDate(e.target.value)} /><br></br>
@@ -71,7 +90,7 @@ export default function Calendar() {
                 <label>Description: </label>
                 <input type="text" value={description} placeholder="Enter Event Description" onChange={(e) => setDescription(e.target.value)} /><br></br>
 
-                <label>Category</label>
+                <label>Category: </label>
                 <select value={category} onChange={(e) => setCategory(e.target.value)}>
                     <option value="Event">Event</option>
                     <option value="Deadline">Deadline</option>
