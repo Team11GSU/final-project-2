@@ -58,8 +58,8 @@ class Message(db.Model):
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     TaskName = db.Column(db.String(100))
-    complete = db.Column(db.Boolean, unique=False, default=True)
-    project = db.relationship("Project", backref=db.backref("todo"))
+    complete = db.Column(db.Boolean, unique=False, default=False)
+    project = db.relationship("Project", backref=db.backref("todos"))
     project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
     user = db.Column(db.String(256))
 
