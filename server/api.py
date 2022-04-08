@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, redirect, request
 from flask_login import current_user, logout_user
 from flask_dance.contrib.google import google
-from server.models import Project, db, Event
+from server.models import Project, Todo, db, Event
 
 # when adding your API route, use the format /<project_id>/your-endpoint
 # Then in function definition use def endpoint(project_id)
@@ -41,6 +41,51 @@ def userdata():
             user_projects=user_projects,
         )
     return jsonify(logged_in=False)
+
+
+@api.route("/todo/<project_id>", methods=["GET", "POST"])
+def todo(project_id):
+    "todo"
+    if request.method == "POST":
+        new_todo = request.json
+        db.session.begin()
+        project = Project.query.filter_by(id=project_id).first()
+        new_todo = Todo(TaskName=new_todo["TaskName"], user=current_user.name)
+        project.todos.append(new_todo)
+        db.session.commit()
+    project = Project.query.filter_by(id=project_id).first()
+    todos = project.todos
+    return jsonify(
+        [
+            {
+                "id": todo.id,
+                "TaskName": todo.TaskName,
+                "user": todo.user,
+                "complete": todo.complete,
+            }
+            for todo in todos
+        ]
+    )
+
+
+@api.route("/todo/<todo_id>/delete", methods=["POST"])
+def delete_todo(todo_id):
+    "todo"
+    db.session.begin()
+    Todo.query.filter_by(id=todo_id).delete()
+    db.session.commit()
+    return jsonify({"deleted": True})
+
+
+@api.route("/todo/<todo_id>/toggle", methods=["POST"])
+def todo_toggle(todo_id):
+    "todo"
+    db.session.begin()
+    toggled_todo = Todo.query.filter_by(id=todo_id).first()
+    toggled_todo.complete = not toggled_todo.complete
+    db.session.commit()
+    print(todo_id, toggled_todo.complete, flush=True)
+    return jsonify({"switched": True})
 
 
 @api.route("/logout")
