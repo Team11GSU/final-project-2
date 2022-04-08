@@ -7,3 +7,7 @@ flask-socketio
 python-dotenv
 psycopg2-binary
 gevent-websocket
+testresources
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
