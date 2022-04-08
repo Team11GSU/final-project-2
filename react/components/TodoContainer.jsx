@@ -3,14 +3,14 @@ import TodoTask from './TodoItem';
 import TodoForms from './TodoForms';
 import { useParams } from 'react-router-dom';
 
-const params = useParams();
+
 
 const TodoItem = [
     {
         id: 1,
         TaskName: 'my first task',
         complete: true,
-        project: params.projectID,
+        
     },
 ]
 
