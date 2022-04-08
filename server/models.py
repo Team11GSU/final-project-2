@@ -55,12 +55,25 @@ class Message(db.Model):
     project = db.relationship("Project", backref=db.backref("messages"))
 
 
+
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     TaskName = db.Column(db.String(100))
     complete = db.Column(db.Boolean, unique=False, default=False)
     project = db.relationship("Project", backref=db.backref("todos"))
     project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
+    user = db.Column(db.String(256))
+    
+class Event(db.Model):
+    "calendar model"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(300), nullable=True)
+    sDate = db.Column(db.String(10), nullable=False)
+    eDate = db.Column(db.String(10), nullable=True)
+    category = db.Column(db.String(8), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
+    project = db.relationship("Project", backref=db.backref("events"))
     user = db.Column(db.String(256))
 
 
