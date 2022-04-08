@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Card, CardBody, CardHeader, CardFooter } from 'grommet'
+import { Box, Card, CardBody, CardHeader, CardFooter } from 'grommet';
 // to be replaced with Grommet components later
 
 function Messages({ socket }) {

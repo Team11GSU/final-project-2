@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import Messages from './components/Messages';
 import MessageInput from './components/MessageInput';
 
+
 export default function Chat() {
     const [socket, setSocket] = useState(null);
 
@@ -11,7 +12,6 @@ export default function Chat() {
         setSocket(newSocket);
         return () => newSocket.close();
     }, [setSocket])
-
 
 
     return (

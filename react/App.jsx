@@ -26,7 +26,7 @@ export default function App() {
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify(value),
-                                })
+                                }).then(resp => alert("Email will be sent."))
                             }
                             }>
                             <FormField name="email" htmlFor="text-input-id" label="Send Email">
