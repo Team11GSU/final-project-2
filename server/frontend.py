@@ -10,7 +10,6 @@ frontend = Blueprint("frontend", __name__, template_folder="templates")
 @frontend.route("/project/<projectID>/todo")
 @frontend.route("/project/<projectID>/chat")
 @frontend.route("/project/<projectID>/files")
-@frontend.route("/project/<projectID>/email")
 def index(projectID=1):
     "index"
     return render_template("index.html")
