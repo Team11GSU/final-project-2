@@ -2,7 +2,17 @@ from flask import Blueprint, jsonify, redirect, request
 from flask_login import current_user, logout_user
 from flask_dance.contrib.google import google
 from server.models import Project, db, Event
+from server.gmail import Create_Service
+import base64
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
+CLIENT_SECRET_FILE = "server/credentials.json"
+API_NAME = "gmail"
+API_VERSION = "v1"
+SCOPES = ["https://mail.google.com/"]
+
+service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
 # when adding your API route, use the format /<project_id>/your-endpoint
 # Then in function definition use def endpoint(project_id)
 # query for the particular project and then use current_user and project ID to add
@@ -104,3 +114,19 @@ def add_event(project_id):
             for event in events
         ]
     )
+
+
+@api.route("/email", methods=["POST"])
+def send_email():
+    emailMsg = "You have been invited to join our project on https://dynamico-swe.herokuapp.com/project/1."
+    data = request.json
+    mimeMessage = MIMEMultipart()
+    mimeMessage["to"] = data["email"]
+    mimeMessage["subject"] = "Dynamico Project Invite"
+    mimeMessage.attach(MIMEText(emailMsg, "plain"))
+    raw_string = base64.urlsafe_b64encode(mimeMessage.as_bytes()).decode()
+    message = (
+        service.users().messages().send(userId="me", body={"raw": raw_string}).execute()
+    )
+    print(message)
+    return jsonify({"success": True})
