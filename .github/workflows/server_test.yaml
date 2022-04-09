@@ -2,6 +2,7 @@ name: unittest
 on: [push, pull_request]
 jobs:
   on_build_actions:
+    environment: CI 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
