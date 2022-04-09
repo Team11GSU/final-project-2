@@ -1,3 +1,5 @@
+name: unittest
+on: [push, pull_request]
 jobs:
   on_build_actions:
     runs-on: ubuntu-latest

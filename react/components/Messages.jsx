@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
@@ -15,7 +16,7 @@ function Messages({ socket }) {
       setMessages((prevMessages) => {
         const newMessages = { ...prevMessages };
         newMessages[message.id] = message;
-        console.log(message);
+        // console.log(message);
         return newMessages;
       });
     };

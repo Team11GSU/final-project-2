@@ -14,7 +14,7 @@ import TodoPage from './todo';
 // entry point for app and Parcel
 const app = document.getElementById('react');
 ReactDOM.render(
-  <Grommet theme={grommet}>
+  <Grommet full theme={grommet}>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate replace to="/project/1" />} />
