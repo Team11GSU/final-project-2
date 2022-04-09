@@ -3,6 +3,7 @@ on: [push, pull_request]
 
 jobs:
   build:
+    environment: CI 
     runs-on: ubuntu-latest
     name: Checks
     steps:

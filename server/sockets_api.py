@@ -39,6 +39,7 @@ def get_messages(project_id):
     for message in messages:
         emit("message", message, broadcast=True, json=True)
 
+
 @socketio.on("test_message")
 def test_message(message):
     "test handler because other methods interact with db"
