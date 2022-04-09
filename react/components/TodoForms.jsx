@@ -28,11 +28,10 @@ function TodoForms({ setTodoList }) {
       });
     setUserInput('');
   };
-
+  
   return (
     <div className="TodoForm">
       <Form onSubmit={handleSubmit}>
-
         <TextInput type="text" value={userInput} name="name" onChange={onChange} placeholder="Enter your Task" required />
 
         <Button type="submit" label="Submit" primary />
