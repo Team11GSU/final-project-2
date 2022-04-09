@@ -7,7 +7,7 @@ function Messages({ socket }) {
     const params = useParams();
     const [messages, setMessages] = useState({});
 
-
+    // Similar useEffect usage as with other files
     useEffect(() => {
         const messageListener = (message) => {
             setMessages((prevMessages) => {

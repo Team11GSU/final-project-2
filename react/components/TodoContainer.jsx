@@ -23,6 +23,7 @@ function TodoContainer() {
     .then((resp) => resp.json())
     .then((todos) => setTodoList(todos));
 
+  // useEffect is used to get todo items whenever a new item is added 
   useEffect(() => {
     getTodos();
   }, []);
@@ -38,6 +39,7 @@ function TodoContainer() {
     setTodoList(item);
   };
 
+  // removes the todo item from the database using a POST request and the id 
   const handleDelete = (id) => {
     fetch(`/todo/${id}/delete`, { method: 'POST' });
     const item = todoList.filter((todo) => todo.id !== id);
@@ -46,10 +48,14 @@ function TodoContainer() {
 
   return (
     <div>
+      {/* A map is used to print all of the todo items that were fetched
+       If there are no todo items currently, a message is displayed to indicate that
+       This is also where the handleDelete and handleClick functions are called */ }
       {todoList.length > 0 ? todoList.map(
         (todo) => <TodoTask todo={todo} key={todo.id} deleteTodo={handleDelete} handleChange={handleClick} />,
       ) : <p>your task is clean</p>}
 
+      {/* TodoForms component is used to get the user inputs */}
       <TodoForms setTodoList={setTodoList} />
 
     </div>

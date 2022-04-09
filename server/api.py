@@ -47,6 +47,7 @@ def userdata():
 def todo(project_id):
     "todo"
     if request.method == "POST":
+        # when a POST request is sent to the api the json data that is submitted is stored in the todo table in the database
         new_todo = request.json
         db.session.begin()
         project = Project.query.filter_by(id=project_id).first()
@@ -55,6 +56,8 @@ def todo(project_id):
         db.session.commit()
     project = Project.query.filter_by(id=project_id).first()
     todos = project.todos
+
+    # function returns json data back to the react page when a GET request is sent
     return jsonify(
         [
             {
@@ -70,8 +73,10 @@ def todo(project_id):
 
 @api.route("/todo/<todo_id>/delete", methods=["POST"])
 def delete_todo(todo_id):
+    # Function serves to delete a specific todo item from the database using a POST request
     "todo"
     db.session.begin()
+    # The specific todo item is selected by querying the database for the unique id
     Todo.query.filter_by(id=todo_id).delete()
     db.session.commit()
     return jsonify({"deleted": True})
@@ -79,12 +84,15 @@ def delete_todo(todo_id):
 
 @api.route("/todo/<todo_id>/toggle", methods=["POST"])
 def todo_toggle(todo_id):
+    # Function serves to manage the status of a particular todo item between complete and incomplete
     "todo"
     db.session.begin()
     toggled_todo = Todo.query.filter_by(id=todo_id).first()
+    # based on the current status of the todo, the opposite status is applied and the item is updated in the database
     toggled_todo.complete = not toggled_todo.complete
     db.session.commit()
     print(todo_id, toggled_todo.complete, flush=True)
+
     return jsonify({"switched": True})
 
 
@@ -98,7 +106,9 @@ def logout():
 @api.route("/<project_id>/getEvent")
 def calendar(project_id):
     "retrieve"
+    # query the event table of the database for all existing events for the current project
     events = Event.query.filter_by(project_id=int(project_id)).all()
+    # returns the data as a json to the react page using a GET request
     return jsonify(
         [
             {
@@ -119,6 +129,7 @@ def add_event(project_id):
     "add event"
     if request.method == "POST":
         db.session.begin()
+        # using a POST request, takes the json form data that is submitted and stores it as a new item in the Event table of the database
         event_title = request.json.get("title")
         event_sdate = request.json.get("sDate")
         event_edate = request.json.get("eDate")
@@ -135,6 +146,8 @@ def add_event(project_id):
         )
         db.session.add(new_event)
         db.session.commit()
+
+        # query all events for the relevant project id and returns that json data
     events = Event.query.filter_by(project_id=int(project_id)).all()
     return jsonify(
         [
