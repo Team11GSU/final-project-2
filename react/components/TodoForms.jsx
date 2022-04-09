@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import {
   Box, Button, Form, FormField, TextInput,
 } from 'grommet';
-// This files uses the same fetch POST convention as other files to send the todo items to the database when they are submitted
+// This files uses the same fetch POST convention as other files to
+// send the todo items to the database when they are submitted
 function TodoForms({ setTodoList }) {
   const params = useParams();
   const [userInput, setUserInput] = useState();
@@ -28,7 +29,7 @@ function TodoForms({ setTodoList }) {
       });
     setUserInput('');
   };
-  
+
   return (
     <div className="TodoForm">
       <Form onSubmit={handleSubmit}>
