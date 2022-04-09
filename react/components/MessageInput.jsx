@@ -1,6 +1,6 @@
+/* eslint-disable react/prop-types */
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import {
   Box, Button, Form, FormField, TextInput,
 } from 'grommet';
@@ -33,7 +33,7 @@ function NewMessage({ socket }) {
         </FormField>
         <Button type="submit" label="Send" primary />
       </Form>
-      </Box>
+    </Box>
   );
 }
 

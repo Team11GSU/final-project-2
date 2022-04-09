@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import {
   Box, Nav, Form, FormField, TextInput, Button,
 } from 'grommet';
@@ -8,17 +9,18 @@ import useUser from './utils/useUser';
 export default function App() {
   const [value, setValue] = useState({});
   const { isLoading, userData } = useUser();
-  // useParams is used to ensure that the pages that displayed correspond to 
+  // useParams is used to ensure that the pages that displayed correspond to
   // the current project that the user is operating in
   const params = useParams();
   if (isLoading) {
-    // While the page checks for a logged in user it displays a 
+    // While the page checks for a logged in user it displays a
     // 'loading' message to indicate that it is in the process
     return <h1>Loading....</h1>;
   }
   return (
-    <Box>
+    <Box pad="large">
       {/* Checks that there is a user currently logged in through the Google Login flow */}
+      <h1>Dummy Project</h1>
       {userData != null && (
       <>
         Hello
@@ -26,6 +28,7 @@ export default function App() {
         {userData.google_data.email}
         <p>
           Click
+          {' '}
           <a href="/logout">here</a>
           {' '}
           to log out
@@ -33,23 +36,21 @@ export default function App() {
         <Form
           value={value}
           onChange={(nextValue) => setValue(nextValue)}
-          onReset={() => setValue({})}
-          onSubmit={({ value }) => {
+          onSubmit={({ val }) => {
             fetch('/email', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify(value),
-            }).then((resp) => alert('Email will be sent.'));
+              body: JSON.stringify(val),
+            }).then(() => alert('Email will be sent.'));
           }}
         >
-          <FormField name="email" htmlFor="text-input-id" label="Send Email">
+          <FormField name="email" htmlFor="text-input-id" label="Send an email to invite a friend">
             <TextInput id="text-input-id" name="email" />
           </FormField>
           <Box direction="row" gap="medium">
             <Button type="submit" primary label="Submit" />
-            <Button type="reset" label="Reset" />
           </Box>
         </Form>
       </>

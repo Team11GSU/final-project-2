@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable no-alert */
+/* eslint-disable react/jsx-no-bind */
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
@@ -56,9 +59,9 @@ export default function Calendar() {
       ),
     })
       .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        window.alert('New Event Saved!');
+      .then(() => {
+        // console.log(data);
+        alert('New Event Saved!');
         setData(data.map((elem) => ({
           title: elem.title,
           start: elem.sDate,
@@ -72,6 +75,14 @@ export default function Calendar() {
     setEDate('');
     setDescription('');
     setCategory('Event');
+  }
+
+  function show(info) {
+    alert(`Details: \n Title: ${info.event.title
+    }\n Description: ${info.event.extendedProps.description
+    }\n Start Date: ${info.event.start
+    }\n End Date: ${info.event.end
+    }\n Category: ${info.event.extendedProps.category}`);
   }
 
   return (
@@ -90,18 +101,10 @@ export default function Calendar() {
         aspectRatio={1}
         displayEventEnd
         events={data}
-        eventClick={
-                    function (info) {
-                      alert(`Details: \n Title: ${info.event.title
-                      }\n Description: ${info.event.extendedProps.description
-                      }\n Start Date: ${info.event.start
-                      }\n End Date: ${info.event.end
-                      }\n Category: ${info.event.extendedProps.category}`);
-                    }
-                }
+        eventClick={show}
       />
       {/* Standard form that is used to send the user's input to the REST API
-            On submission, having clicked the submit button, the handleSubmit 
+            On submission, having clicked the submit button, the handleSubmit
             function is called to handle that POST request */}
       <form onSubmit={handleSubmit}>
         <label>Title: </label>

@@ -1,5 +1,6 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import { Box, CheckBox } from 'grommet';
+import { CheckBox } from 'grommet';
 
 function TodoTask({ todo, deleteTodo, handleChange }) {
   const handleClick = () => {
@@ -15,6 +16,7 @@ function TodoTask({ todo, deleteTodo, handleChange }) {
         style={{ position: 'fixed', right: 20, cursor: 'pointer' }}
         /* On click the todo item is removed from the list */
         onClick={() => { deleteTodo(todo.id); }}
+        aria-hidden="true"
       >
         delete
       </span>

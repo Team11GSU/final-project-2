@@ -46,12 +46,13 @@ class UnmockedTests(TestCase):
     def test_homepage(self):
         "tests index.html successfully redirects for registered endpoints"
         tester = app.test_client(self)
-        pages = ['/', '/loginform']
+        pages = ["/", "/loginform"]
         for page in pages:
             response = tester.get(page)
             self.assertEqual(response.status_code, 200)
         response = tester.get("email")
         self.assertEqual(response.status_code, 405)
+
 
 if __name__ == "__main__":
     main()
