@@ -17,9 +17,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           touch .env
-          CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
-          CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
-          SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-          DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
+          CLIENT_ID=${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}
+          SECRET_KEY=${{ secrets.SECRET_KEY }} 
+          DATABASE_URL=${{ secrets.DATABASE_URL }} 
       - name: Run Tests    
         run: python -m unittest tests.py
