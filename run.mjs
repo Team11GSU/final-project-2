@@ -12,7 +12,7 @@ import { $, argv } from 'zx';
 if (argv.prod) {
   process.env.FLASK_APP = 'app:app';
   await $`npx parcel build`;
-//   await $`gunicorn app:app`;
+  //   await $`gunicorn app:app`;
   await $`flask run`;
 } else {
   process.env.FORCE_COLOR = '1';

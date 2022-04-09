@@ -1,9 +1,9 @@
 from os import getenv
 from flask_dance.contrib.google import make_google_blueprint
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
+from flask_dance.consumer import oauth_authorized
 from flask_login import current_user, login_user
 from dotenv import find_dotenv, load_dotenv
-from flask_dance.consumer import oauth_authorized
 from server.models import db, OAuth, User
 
 load_dotenv(find_dotenv())

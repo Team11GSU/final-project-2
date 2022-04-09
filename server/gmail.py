@@ -1,18 +1,20 @@
+# pylint: disable=invalid-name
+
 import pickle
 import os
-from google_auth_oauthlib.flow import Flow, InstalledAppFlow
+import datetime
+from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 from google.auth.transport.requests import Request
 
 
-def Create_Service(client_secret_file, api_name, api_version, *scopes):
-    print(client_secret_file, api_name, api_version, scopes, sep="-")
+def create_service(client_secret_file, api_name, api_version, *scopes):
+    "creates the email service"
+    # print(client_secret_file, api_name, api_version, scopes, sep="-")
     CLIENT_SECRET_FILE = client_secret_file
     API_SERVICE_NAME = api_name
     API_VERSION = api_version
-    SCOPES = [scope for scope in scopes[0]]
-    print(SCOPES)
+    SCOPES = list(scopes[0])
 
     cred = None
 
@@ -35,14 +37,15 @@ def Create_Service(client_secret_file, api_name, api_version, *scopes):
 
     try:
         service = build(API_SERVICE_NAME, API_VERSION, credentials=cred)
-        print(API_SERVICE_NAME, "service created successfully")
         return service
-    except Exception as e:
+    # pylint: disable=broad-except
+    except Exception as exc:
         print("Unable to connect.")
-        print(e)
+        print(exc)
         return None
 
 
 def convert_to_RFC_datetime(year=1900, month=1, day=1, hour=0, minute=0):
+    "converts to datetime string"
     dt = datetime.datetime(year, month, day, hour, minute, 0).isoformat() + "Z"
     return dt
