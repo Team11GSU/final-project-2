@@ -4,8 +4,9 @@ import { Box, Button, Form, FormField, TextInput } from 'grommet';
 
 const NewMessage = ({ socket }) => {
   const params = useParams();
+  // Similar useState usage as with other files such as in calendar.jsx
   const [message, setMessage] = useState({});
-  const submitForm = ({value}) => {
+  const submitForm = ({ value }) => {
     const msg = {
       message: value.message,
       project: params.projectID
@@ -16,6 +17,7 @@ const NewMessage = ({ socket }) => {
   };
 
   return (
+    // Form used to take the user's input and send it to the database via socket.io
     <Form onSubmit={submitForm} message={message} onChange={(newmessage) => {
       setMessage(newmessage);
     }}>
