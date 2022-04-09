@@ -1,53 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import TodoTask from './TodoItem';
 import TodoForms from './TodoForms';
-import { useParams } from 'react-router-dom';
 
+// const TodoItem = [
+//   {
+//     id: 1,
+//     TaskName: 'my first task',
+//     complete: true,
+//   },
+// ];
 
+function TodoContainer() {
+  const params = useParams();
+  const [todoList, setTodoList] = useState([]);
+  //   const handleAddItem = (userInput) => {
+  //     const item = [...todoList, userInput];
+  //     setTodoList(item);
+  //   };
 
-const TodoItem = [
-    {
-        id: 1,
-        TaskName: 'my first task',
-        complete: true,
-        
-    },
-]
+  const getTodos = () => fetch(`/todo/${params.projectID}`)
+    .then((resp) => resp.json())
+    .then((todos) => setTodoList(todos));
 
-const TodoContainer = () => {
-    const [todoList, setTodoList] = useState(TodoItem);
-    const handleAddItem = (userInput) => {
-        const item = [...todoList, userInput];
-        setTodoList(item);
-    }
+  useEffect(() => {
+    getTodos();
+  }, []);
 
-    const handleClick = (id) => {
-        const item = todoList.map(todo => {
-            if (todo.id == id) {
-                return { ...todo, complete: !todo.complete }
-            }
-            return todo;
-        })
-        setTodoList(item)
-    }
+  const handleClick = (id) => {
+    fetch(`/todo/${id}/toggle`, { method: 'POST' });
+    const item = todoList.map((todo) => {
+      if (todo.id === id) {
+        return { ...todo, complete: !todo.complete };
+      }
+      return todo;
+    });
+    setTodoList(item);
+  };
 
-    const handleDelete = (id) => {
-        let item = todoList.filter(todo =>
-            todo.id !== id
-        );
-        setTodoList(item)
+  const handleDelete = (id) => {
+    fetch(`/todo/${id}/delete`, { method: 'POST' });
+    const item = todoList.filter((todo) => todo.id !== id);
+    setTodoList(item);
+  };
 
-    }
+  return (
+    <div>
+      {todoList.length > 0 ? todoList.map(
+        (todo) => <TodoTask todo={todo} key={todo.id} deleteTodo={handleDelete} handleChange={handleClick} />,
+      ) : <p>your task is clean</p>}
 
-    return (
-        <div>
-            {todoList.length > 0 ? todoList.map(
-                (todo) => <TodoTask todo={todo} key={todo.id} deleteTodo={handleDelete}handleChange={handleClick} />) : <p>your task is clean</p>}
+      <TodoForms setTodoList={setTodoList} />
 
-            <TodoForms addItem={handleAddItem} />
-
-        </div>
-    )
+    </div>
+  );
 }
 
-export default TodoContainer
+export default TodoContainer;
