@@ -1,0 +1,25 @@
+name: unittest
+on: [push, pull_request]
+jobs:
+  on_build_actions:
+    environment: CI 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          cd $GITHUB_WORKSPACE
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          touch .env
+          CLIENT_ID=${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}
+          SECRET_KEY=${{ secrets.SECRET_KEY }} 
+          DATABASE_URL=${{ secrets.DATABASE_URL }} 
+      - name: Run Tests    
+        run: python -m unittest tests.py

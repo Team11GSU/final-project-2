@@ -4,8 +4,6 @@ from server.models import db, Message, Project
 
 socketio = SocketIO()
 
-# Unfortunately the Chat code has to be here only
-
 # messages = []
 
 
@@ -40,6 +38,12 @@ def get_messages(project_id):
     messages = list(map(message_to_dict, messages))
     for message in messages:
         emit("message", message, broadcast=True, json=True)
+
+
+@socketio.on("test_message")
+def test_message(message):
+    "test handler because other methods interact with db"
+    emit("test_message", message)
 
 
 # @socketio.on('deleteMessage')

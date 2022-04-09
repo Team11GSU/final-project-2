@@ -53,15 +53,15 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-# @app.errorhandler(Exception)
-# def handle_error(error):
-#     "error handler"
-#     code = 500
-#     if isinstance(error, HTTPException):
-#         code = error.code
-#         if code == 404:
-#             return render_template("index.html"), 404
-#     return render_template("index.html"), code
+@app.errorhandler(Exception)
+def handle_error(error):
+    "error handler"
+    code = 500
+    if isinstance(error, HTTPException):
+        code = error.code
+        if code == 404:
+            return render_template("index.html"), 404
+    return render_template("index.html"), code
 
 
 db.init_app(app)
@@ -83,12 +83,6 @@ socketio.init_app(app)
 
 with app.app_context():
     db.create_all()
-# do NOT uncomment
-# app.run(
-#     debug=True,
-#     host=os.getenv("IP", "0.0.0.0"),
-#     port=int(os.getenv("PORT", "8080")),
-# )
 
 if __name__ == "__main__":
     print("probably on http://127.0.0.1:8080/", flush=True)
@@ -96,5 +90,5 @@ if __name__ == "__main__":
         app,
         debug=True,
         host=os.getenv("IP", "0.0.0.0"),
-        port=int(os.getenv("PORT", "5000")),  # change to 5000 if issues
+        port=int(os.getenv("PORT", "8080")),  # change to 5000 if issues
     )

@@ -1,10 +1,12 @@
-from flask import Blueprint, jsonify, redirect, request
-from flask_login import current_user, logout_user
-from flask_dance.contrib.google import google
-from server.gmail import Create_Service
+# pylint: disable=invalid-name
+# pylint: disable=no-member
 import base64
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from flask import Blueprint, jsonify, redirect, request
+from flask_login import current_user, logout_user
+from flask_dance.contrib.google import google
+from server.gmail import create_service
 from server.models import Project, Todo, db, Event
 
 CLIENT_SECRET_FILE = "server/credentials.json"
@@ -12,7 +14,7 @@ API_NAME = "gmail"
 API_VERSION = "v1"
 SCOPES = ["https://mail.google.com/"]
 
-service = Create_Service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
+service = create_service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
 # when adding your API route, use the format /<project_id>/your-endpoint
 # Then in function definition use def endpoint(project_id)
 # query for the particular project and then use current_user and project ID to add
@@ -35,14 +37,14 @@ def userdata():
             project = Project(name="dummy")
             db.session.add(project)
         member = list(filter(lambda x: x.email == current_user.email, project.members))
-        print(member, flush=True)
+        # print(member, flush=True)
         if not member:
-            print("here", flush=True)
+            # print("here", flush=True)
             project.members.append(current_user)
         user_projects = list(map(lambda x: x.id, current_user.projects))
-        print(
-            project.id, project.name, project.members, current_user.projects, flush=True
-        )
+        # print(
+        #     project.id, project.name, project.members, current_user.projects, flush=True
+        # )
         db.session.commit()
         return jsonify(
             logged_in=True,
@@ -57,7 +59,8 @@ def userdata():
 def todo(project_id):
     "todo"
     if request.method == "POST":
-        # when a POST request is sent to the api the json data that is submitted is stored in the todo table in the database
+        # when a POST request is sent to the api the json data that is
+        # submitted is stored in the todo table in the database
         new_todo = request.json
         db.session.begin()
         project = Project.query.filter_by(id=project_id).first()
@@ -98,10 +101,11 @@ def todo_toggle(todo_id):
     "todo"
     db.session.begin()
     toggled_todo = Todo.query.filter_by(id=todo_id).first()
-    # based on the current status of the todo, the opposite status is applied and the item is updated in the database
+    # based on the current status of the todo, the opposite status is
+    # applied and the item is updated in the database
     toggled_todo.complete = not toggled_todo.complete
     db.session.commit()
-    print(todo_id, toggled_todo.complete, flush=True)
+    # print(todo_id, toggled_todo.complete, flush=True)
 
     return jsonify({"switched": True})
 
@@ -139,7 +143,8 @@ def add_event(project_id):
     "add event"
     if request.method == "POST":
         db.session.begin()
-        # using a POST request, takes the json form data that is submitted and stores it as a new item in the Event table of the database
+        # using a POST request, takes the json form data that is submitted and
+        # stores it as a new item in the Event table of the database
         event_title = request.json.get("title")
         event_sdate = request.json.get("sDate")
         event_edate = request.json.get("eDate")
@@ -176,13 +181,15 @@ def add_event(project_id):
 
 @api.route("/email", methods=["POST"])
 def send_email():
-    emailMsg = "You have been invited to join our project on https://dynamico-swe.herokuapp.com/project/1."
+    "sends an email (currently through personal mail)"
+    email_msg = "You have been invited to join our \
+         project on https://dynamico-swe.herokuapp.com/project/1."
     data = request.json
-    mimeMessage = MIMEMultipart()
-    mimeMessage["to"] = data["email"]
-    mimeMessage["subject"] = "Dynamico Project Invite"
-    mimeMessage.attach(MIMEText(emailMsg, "html"))
-    raw_string = base64.urlsafe_b64encode(mimeMessage.as_bytes()).decode()
+    mime_message = MIMEMultipart()
+    mime_message["to"] = data["email"]
+    mime_message["subject"] = "Dynamico Project Invite"
+    mime_message.attach(MIMEText(email_msg, "html"))
+    raw_string = base64.urlsafe_b64encode(mime_message.as_bytes()).decode()
     message = (
         service.users().messages().send(userId="me", body={"raw": raw_string}).execute()
     )
