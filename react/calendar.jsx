@@ -5,14 +5,17 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 
 export default function Calendar() {
+    /* useParams is used to ensure that the calendar that is displayed matches that of the projectID that is passed in the endpoint*/
     const params = useParams();
+
+    /* useState is used so that our variable are preserved through the application and also serves to set the appropriate data into its respective variable*/
     const [data, setData] = useState([])
     const [title, setTitle] = useState("");
     const [sDate, setSDate] = useState("");
     const [eDate, setEDate] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("Event");
-
+    /* useEffect is used so that anytime a new event is added to the calendar, the fetch is called again and the new event is rendered to the screen  */
     useEffect(() => {
         fetch(`/${params.projectID}/getEvent`)
             .then((response) => response.json())
@@ -22,6 +25,11 @@ export default function Calendar() {
             })
     }, []);
 
+    /* This function is used for the submission of the form
+    A post request is used to send the form data to the REST API that was created in api.py 
+    A map is used to loop through the data and store it in the appropriate parameter 
+    The user is notified that the event has successfully been added to the calendar
+    And the form is cleared on submission*/
     function handleSubmit(e) {
         e.preventDefault()
         fetch(`/${params.projectID}/addEvent`, {
@@ -59,6 +67,9 @@ export default function Calendar() {
 
         <>
             <h1>Calendar Page</h1>
+            {/* The FullCalendar parent component is called with props to adjust what the calendar will look like once rendered 
+            With the event prop, the json data that was stored in 'data' is looped through displaying all unique events that have been created
+            The eventClick prop serves to create a pop-up box when the user clicks on an event on the calendar. After which they will be able to see all of the relavant data for that particular event */}
             <FullCalendar
                 plugins={[dayGridPlugin]}
                 initialView="dayGridMonth"
@@ -76,7 +87,8 @@ export default function Calendar() {
                     }
                 }
             />
-
+            {/* Standard form that is used to send the user's input to the REST API
+            On submission, having clicked the submit button, the handleSubmit function is called to handle that POST request*/}
             <form onSubmit={handleSubmit}>
                 <label>Title: </label>
                 <input type="text" value={title} placeholder="Enter Title" required onChange={(e) => setTitle(e.target.value)} /><br></br>

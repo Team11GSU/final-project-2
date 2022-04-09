@@ -19,9 +19,12 @@ export default function Chat() {
             <h1>Chat Page</h1>
             {socket ? (
                 <div className="chat-container">
+                    {/* The Messages component is used to display any new messages that were sent including who sent it, what the message contents are and when it was sent */}
                     <Messages socket={socket} />
+                    {/* MessageInput component is used to take the user's input and send it through socket.io */}
                     <MessageInput socket={socket} />
                 </div>
+                /* Message is displayed to indicate that the user is not connected to the socket.io server */
             ) : <div>Not Connected!</div>}
         </>
     )

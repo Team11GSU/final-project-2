@@ -7,10 +7,12 @@ function TodoTask({ todo, deleteTodo, handleChange }) {
   };
   return (
     <div className="CheckboxItem">
+      {/* Grommet Checkbox is used to indicate the current status of the corresponding todo item which is followed by the name of the todo task */}
       <CheckBox checked={todo.complete} onChange={() => handleClick()} />
       <span value={todo.id}>{todo.TaskName}</span>
       <span
         style={{ position: 'fixed', right: 20, cursor: 'pointer' }}
+        /* On click the todo item is removed from the list*/
         onClick={() => { deleteTodo(todo.id); }}
       >
         delete
