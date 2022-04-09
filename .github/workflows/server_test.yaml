@@ -16,13 +16,10 @@ jobs:
           cd $GITHUB_WORKSPACE
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          echo $CLIENT_ID
-          echo ${{ secrets.CLIENT_ID }}
-          echo $CLIENT_SECRET
-          echo ${{ secrets.CLIENT_SECRET }}
-          echo $SECRET_KEY
-          echo ${{ secrets.SECRET_KEY }}
-          echo $DATABASE_URL
-          echo ${{ secrets.DATABASE_URL }}
+          touch .env
+          echo CLIENT_ID=${{ secrets.CLIENT_ID }} >> .env
+          echo CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} >> .env
+          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+          echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
       - name: Run Tests    
         run: python -m unittest tests.py
