@@ -4,3 +4,5 @@ node_modules/
 .parcel-cache/
 static/js/
 __pycache__
+.github
+.eslintrc.json
