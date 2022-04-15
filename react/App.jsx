@@ -1,13 +1,11 @@
 /* eslint-disable no-alert */
 import {
-  Box, Nav, Form, FormField, TextInput, Button,
+  Box, Nav,
 } from 'grommet';
 import { Outlet, Link, useParams } from 'react-router-dom';
-import { useState } from 'react';
 import useUser from './utils/useUser';
 
 export default function App() {
-  const [value, setValue] = useState({});
   const { isLoading, userData } = useUser();
   // useParams is used to ensure that the pages that displayed correspond to
   // the current project that the user is operating in
@@ -22,38 +20,19 @@ export default function App() {
       {/* Checks that there is a user currently logged in through the Google Login flow */}
       <h1>Dummy Project</h1>
       {userData != null && (
-      <>
-        Hello
-        {' '}
-        {userData.google_data.email}
-        <p>
-          Click
+        <>
+          Hello
           {' '}
-          <a href="/logout">here</a>
-          {' '}
-          to log out
-        </p>
-        <Form
-          value={value}
-          onChange={(nextValue) => setValue(nextValue)}
-          onSubmit={({ val }) => {
-            fetch('/email', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(val),
-            }).then(() => alert('Email will be sent.'));
-          }}
-        >
-          <FormField name="email" htmlFor="text-input-id" label="Send an email to invite a friend">
-            <TextInput id="text-input-id" name="email" />
-          </FormField>
-          <Box direction="row" gap="medium">
-            <Button type="submit" primary label="Submit" />
-          </Box>
-        </Form>
-      </>
+          {userData.google_data.email}
+          <p>
+            Click
+            {' '}
+            <a href="/logout">here</a>
+            {' '}
+            to log out
+          </p>
+
+        </>
 
       )}
       {/* Clickable links that take the user to the corresponding pages */}
