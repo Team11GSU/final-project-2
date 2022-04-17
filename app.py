@@ -35,6 +35,13 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL").replace(
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = os.getenv("SECRET_KEY")
 
+S3_BUCKET = "team11-finalproject-dynamico"
+AWS_REGION = "us-east-1"
+app.config["S3_BUCKET"] = S3_BUCKET
+app.config["AWS_ACCESS_KEY_ID'"] = os.getenv("AWS_ACCESS_KEY_ID")
+app.config["AWS_SECRET_ACCESS_KEY"] = os.getenv("AWS_SECRET_ACCESS_KEY")
+app.config["S3_LOCATION"] = f"https://{S3_BUCKET}.{AWS_REGION}.amazonaws.com/"
+
 app.register_blueprint(frontend)
 app.register_blueprint(api)
 app.register_blueprint(google_blueprint)
@@ -53,15 +60,15 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-@app.errorhandler(Exception)
-def handle_error(error):
-    "error handler"
-    code = 500
-    if isinstance(error, HTTPException):
-        code = error.code
-        if code == 404:
-            return render_template("index.html"), 404
-    return render_template("index.html"), code
+# @app.errorhandler(Exception)
+# def handle_error(error):
+#     "error handler"
+#     code = 500
+#     if isinstance(error, HTTPException):
+#         code = error.code
+#         if code == 404:
+#             return render_template("index.html"), 404
+#     return render_template("index.html"), code
 
 
 db.init_app(app)

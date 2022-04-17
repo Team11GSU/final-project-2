@@ -5,11 +5,11 @@ frontend = Blueprint("frontend", __name__, template_folder="templates")
 
 @frontend.route("/")
 @frontend.route("/loginform")
-@frontend.route("/project/<projectID>/")
-@frontend.route("/project/<projectID>/calendar")
-@frontend.route("/project/<projectID>/todo")
-@frontend.route("/project/<projectID>/chat")
-@frontend.route("/project/<projectID>/files")
+@frontend.route("/project/<project_id>/")
+@frontend.route("/project/<project_id>/calendar")
+@frontend.route("/project/<project_id>/todo")
+@frontend.route("/project/<project_id>/chat")
+@frontend.route("/project/<project_id>/files")
 # pylint: disable=unused-argument
 def index(project_id=1):
     "index"
