@@ -2,6 +2,7 @@ blinker
 Flask
 Flask-Dance
 Flask-Login
+Flask-Mail
 Flask-SQLAlchemy
 flask-socketio
 python-dotenv

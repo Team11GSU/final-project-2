@@ -1,9 +1,10 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 # from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_mail import Mail, Message
 from werkzeug.exceptions import HTTPException
 
 from dotenv import find_dotenv, load_dotenv
@@ -41,6 +42,29 @@ app.config["S3_BUCKET"] = S3_BUCKET
 app.config["AWS_ACCESS_KEY_ID'"] = os.getenv("AWS_ACCESS_KEY_ID")
 app.config["AWS_SECRET_ACCESS_KEY"] = os.getenv("AWS_SECRET_ACCESS_KEY")
 app.config["S3_LOCATION"] = f"https://{S3_BUCKET}.{AWS_REGION}.amazonaws.com/"
+
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 465
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+app.config["MAIL_USE_TLS"] = False
+app.config["MAIL_USE_SSL"] = True
+mail = Mail(app)
+
+
+@app.route("/email", methods=["POST"])
+def send_email():
+    "sends an email"
+    data = request.json
+    subject = "Dynamico Project Invite"
+    sender = os.getenv("MAIL_USERNAME")
+    recipient = data["email"]
+    msg = Message(subject, sender=sender, recipients=[recipient])
+    msg.body = "You have been invited to join our \
+         project on https://dynamico-swe.herokuapp.com/project/1."
+    mail.send(msg)
+    return "Message sent"
+
 
 app.register_blueprint(frontend)
 app.register_blueprint(api)
@@ -93,6 +117,7 @@ with app.app_context():
 
 if __name__ == "__main__":
     print("probably on http://127.0.0.1:8080/", flush=True)
+    app.run(debug=True)
     socketio.run(
         app,
         debug=True,
