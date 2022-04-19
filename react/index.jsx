@@ -11,6 +11,7 @@ import Calendar from './calendar';
 import Files from './files';
 import TodoPage from './todo';
 import UserProfile from './profile'
+import Members from './members'
 
 // entry point for app and Parcel
 const app = document.getElementById('react');
