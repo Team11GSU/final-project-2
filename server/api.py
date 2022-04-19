@@ -1,12 +1,12 @@
 # pylint: disable=invalid-name
 # pylint: disable=no-member
-import base64
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from flask import Blueprint, jsonify, redirect, request
-from flask_login import current_user, login_required, logout_user
+import os
+from flask import Blueprint, jsonify, redirect, render_template, request
+from flask_login import current_user, logout_user
 from flask_dance.contrib.google import google
+from flask_mail import Mail, Message
 import boto3
+
 # from server.gmail import create_service
 from server.models import Project, Todo, db, Event, File
 
@@ -16,18 +16,16 @@ API_VERSION = "v1"
 SCOPES = ["https://mail.google.com/"]
 
 
-
 # # commented out because of token expiry...
 #
 # service = create_service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
-
 
 
 # when adding your API route, use the format /<project_id>/your-endpoint
 # Then in function definition use def endpoint(project_id)
 # query for the particular project and then use current_user and project ID to add
 
-api = Blueprint("api", __name__)
+api = Blueprint("api", __name__, template_folder="templates")
 
 
 @api.route("/userdata")
@@ -149,7 +147,6 @@ def calendar(project_id):
 @api.route("/getUserEvents")
 def userEvents():
     "user events for calendar"
-    project = Project.query.all()
 
     user_projects = list(map(lambda x: x.id, current_user.projects))
 
@@ -181,7 +178,13 @@ def userProjects():
         projects = Project.query.filter_by(id=data).all()
 
     return jsonify(
-        [{"name": project.name, "project_id": project.id,} for project in projects]
+        [
+            {
+                "name": project.name,
+                "project_id": project.id,
+            }
+            for project in projects
+        ]
     )
 
 
@@ -226,6 +229,8 @@ def add_event(project_id):
     )
 
 
+mail = Mail()
+
 # @api.route("/email", methods=["POST"])
 # def send_email():
 # "sends an email (currently through personal mail)"
@@ -242,6 +247,24 @@ def add_event(project_id):
 # )
 # print(message)
 # return jsonify({"success": True})
+
+
+@api.route("/email", methods=["POST"])
+def send_email():
+    "sends an email"
+    data = request.json
+    subject = "Dynamico Project Invite"
+    sender = os.getenv("MAIL_USERNAME")
+    recipient = data["email"]
+    msg = Message(subject, sender=sender, recipients=[recipient])
+    msg.html = render_template(
+        "email_invite.html",
+        url=f'https://dynamico-swe.herokuapp.com/project/{data["project"]}',
+    )
+    # msg.body = "You have been invited to join our \
+    #      project on https://dynamico-swe.herokuapp.com/project/1."
+    mail.send(msg)
+    return jsonify({"success": True})
 
 
 @api.route("/<project_id>/s3/list")
