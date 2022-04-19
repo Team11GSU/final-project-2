@@ -5,3 +5,4 @@ node_modules/
 static/js/
 __pycache__
 server/credentials.json
+
