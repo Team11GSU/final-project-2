@@ -36,13 +36,13 @@ export default function App() {
           <Form
             value={value}
             onChange={(nextValue) => setValue(nextValue)}
-            onSubmit={({ val }) => {
+            onSubmit={({ value }) => {
               fetch('/email', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(val),
+                body: JSON.stringify(value),
               }).then(() => alert('Email will be sent.'));
             }}
           >
