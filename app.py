@@ -4,7 +4,6 @@ from flask import Flask, render_template, request
 
 # from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_mail import Mail, Message
 from werkzeug.exceptions import HTTPException
 
 from dotenv import find_dotenv, load_dotenv
@@ -12,7 +11,7 @@ from dotenv import find_dotenv, load_dotenv
 from server.models import db, User
 from server.google_endpoint import google_blueprint
 from server.frontend import frontend
-from server.api import api
+from server.api import api, mail
 from server.sockets_api import socketio
 
 load_dotenv(find_dotenv())
@@ -49,21 +48,7 @@ app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
 app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
 app.config["MAIL_USE_TLS"] = False
 app.config["MAIL_USE_SSL"] = True
-mail = Mail(app)
 
-
-@app.route("/email", methods=["POST"])
-def send_email():
-    "sends an email"
-    data = request.json
-    subject = "Dynamico Project Invite"
-    sender = os.getenv("MAIL_USERNAME")
-    recipient = data["email"]
-    msg = Message(subject, sender=sender, recipients=[recipient])
-    msg.body = "You have been invited to join our \
-         project on https://dynamico-swe.herokuapp.com/project/1."
-    mail.send(msg)
-    return "Message sent"
 
 
 app.register_blueprint(frontend)
@@ -96,6 +81,7 @@ def load_user(user_id):
 
 
 db.init_app(app)
+mail.init_app(app)
 socketio.init_app(app)
 
 # # pylint: disable=unused-argument
@@ -117,7 +103,6 @@ with app.app_context():
 
 if __name__ == "__main__":
     print("probably on http://127.0.0.1:8080/", flush=True)
-    app.run(debug=True)
     socketio.run(
         app,
         debug=True,

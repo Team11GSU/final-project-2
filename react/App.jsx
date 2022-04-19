@@ -7,7 +7,7 @@ import { useState } from 'react';
 import useUser from './utils/useUser';
 
 export default function App() {
-  const [value, setValue] = useState({});
+  const [email, setEmail] = useState({});
   const { isLoading, userData } = useUser();
   // useParams is used to ensure that the pages that displayed correspond to
   // the current project that the user is operating in
@@ -23,9 +23,13 @@ export default function App() {
       <h1>Dummy Project</h1>
       {userData != null && (
         <>
-          Hello
-          {' '}
-          {userData.google_data.email}
+          <span>
+            Hello
+            {' '}
+            {userData.google_data.email}
+            {' '}
+            <Link to="/profile">Your Profile</Link>
+          </span>
           <p>
             Click
             {' '}
@@ -34,15 +38,16 @@ export default function App() {
             to log out
           </p>
           <Form
-            value={value}
-            onChange={(nextValue) => setValue(nextValue)}
-            onSubmit={({ val }) => {
+            email={email}
+            onChange={(nextemail) => setEmail(nextemail)}
+            onSubmit={({ value }) => {
+              console.log(value);
               fetch('/email', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(val),
+                body: JSON.stringify({ ...value, project: params.projectID }),
               }).then(() => alert('Email will be sent.'));
             }}
           >
@@ -62,7 +67,6 @@ export default function App() {
         <Link to={`/project/${params.projectID}/calendar`}>Calendar</Link>
         <Link to={`/project/${params.projectID}/todo`}>Todo</Link>
         <Link to={`/project/${params.projectID}/files`}>Files</Link>
-        <Link to={`/profile`}>User Profile</Link>
       </Nav>
       <Outlet />
     </Box>
