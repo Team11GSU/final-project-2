@@ -36,7 +36,7 @@ export default function UserProfile() {
     return (
         <><div>
             {/* Page where a list of your projects will be displayed as well as a calendar that shows are of your events */}
-            <h2>User Profile Page </h2>
+            <h1>User Profile Page </h1>
         </div>
             <FullCalendar
                 plugins={[dayGridPlugin]}
