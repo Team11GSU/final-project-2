@@ -22,38 +22,38 @@ export default function App() {
       {/* Checks that there is a user currently logged in through the Google Login flow */}
       <h1>Dummy Project</h1>
       {userData != null && (
-      <>
-        Hello
-        {' '}
-        {userData.google_data.email}
-        <p>
-          Click
+        <>
+          Hello
           {' '}
-          <a href="/logout">here</a>
-          {' '}
-          to log out
-        </p>
-        <Form
-          value={value}
-          onChange={(nextValue) => setValue(nextValue)}
-          onSubmit={({ val }) => {
-            fetch('/email', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(val),
-            }).then(() => alert('Email will be sent.'));
-          }}
-        >
-          <FormField name="email" htmlFor="text-input-id" label="Send an email to invite a friend">
-            <TextInput id="text-input-id" name="email" />
-          </FormField>
-          <Box direction="row" gap="medium">
-            <Button type="submit" primary label="Submit" />
-          </Box>
-        </Form>
-      </>
+          {userData.google_data.email}
+          <p>
+            Click
+            {' '}
+            <a href="/logout">here</a>
+            {' '}
+            to log out
+          </p>
+          <Form
+            value={value}
+            onChange={(nextValue) => setValue(nextValue)}
+            onSubmit={({ val }) => {
+              fetch('/email', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(val),
+              }).then(() => alert('Email will be sent.'));
+            }}
+          >
+            <FormField name="email" htmlFor="text-input-id" label="Send an email to invite a friend">
+              <TextInput id="text-input-id" name="email" />
+            </FormField>
+            <Box direction="row" gap="medium">
+              <Button type="submit" primary label="Submit" />
+            </Box>
+          </Form>
+        </>
 
       )}
       {/* Clickable links that take the user to the corresponding pages */}
@@ -62,6 +62,7 @@ export default function App() {
         <Link to={`/project/${params.projectID}/calendar`}>Calendar</Link>
         <Link to={`/project/${params.projectID}/todo`}>Todo</Link>
         <Link to={`/project/${params.projectID}/files`}>Files</Link>
+        <Link to={`/profile`}>User Profile</Link>
       </Nav>
       <Outlet />
     </Box>

@@ -5,6 +5,7 @@ frontend = Blueprint("frontend", __name__, template_folder="templates")
 
 @frontend.route("/")
 @frontend.route("/loginform")
+@frontend.route("/profile")
 @frontend.route("/project/<projectID>/")
 @frontend.route("/project/<projectID>/calendar")
 @frontend.route("/project/<projectID>/todo")
