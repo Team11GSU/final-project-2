@@ -226,22 +226,22 @@ def add_event(project_id):
     )
 
 
-@api.route("/email", methods=["POST"])
-def send_email():
-    "sends an email (currently through personal mail)"
-    email_msg = "You have been invited to join our \
-         project on https://dynamico-swe.herokuapp.com/project/1."
-    data = request.json
-    mime_message = MIMEMultipart()
-    mime_message["to"] = data["email"]
-    mime_message["subject"] = "Dynamico Project Invite"
-    mime_message.attach(MIMEText(email_msg, "html"))
-    raw_string = base64.urlsafe_b64encode(mime_message.as_bytes()).decode()
-    # message = (
-    #     service.users().messages().send(userId="me", body={"raw": raw_string}).execute()
-    # )
-    # print(message)
-    return jsonify({"success": True})
+# @api.route("/email", methods=["POST"])
+# def send_email():
+# "sends an email (currently through personal mail)"
+# email_msg = "You have been invited to join our \
+# project on https://dynamico-swe.herokuapp.com/project/1."
+# data = request.json
+# mime_message = MIMEMultipart()
+# mime_message["to"] = data["email"]
+# mime_message["subject"] = "Dynamico Project Invite"
+# mime_message.attach(MIMEText(email_msg, "html"))
+# raw_string = base64.urlsafe_b64encode(mime_message.as_bytes()).decode()
+# message = (
+#     service.users().messages().send(userId="me", body={"raw": raw_string}).execute()
+# )
+# print(message)
+# return jsonify({"success": True})
 
 
 @api.route("/<project_id>/s3/list")
