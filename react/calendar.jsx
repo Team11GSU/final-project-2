@@ -2,6 +2,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/jsx-no-bind */
 import React, { useEffect, useState } from 'react';
+import { Button, Form, TextInput, TextArea, Select } from 'grommet';
 import { useParams } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -79,11 +80,12 @@ export default function Calendar() {
 
   function show(info) {
     alert(`Details: \n Title: ${info.event.title
-    }\n Description: ${info.event.extendedProps.description
-    }\n Start Date: ${info.event.start
-    }\n End Date: ${info.event.end
-    }\n Category: ${info.event.extendedProps.category}`);
+      }\n Description: ${info.event.extendedProps.description
+      }\n Start Date: ${info.event.start
+      }\n End Date: ${info.event.end
+      }\n Category: ${info.event.extendedProps.category}`);
   }
+
 
   return (
 
@@ -102,37 +104,35 @@ export default function Calendar() {
         displayEventEnd
         events={data}
         eventClick={show}
+
       />
       {/* Standard form that is used to send the user's input to the REST API
             On submission, having clicked the submit button, the handleSubmit
             function is called to handle that POST request */}
-      <form onSubmit={handleSubmit}>
-        <label>Title: </label>
-        <input type="text" value={title} placeholder="Enter Title" required onChange={(e) => setTitle(e.target.value)} />
+      <Form onSubmit={handleSubmit}>
+        <TextInput type="text" label='Title: ' value={title} placeholder="Enter Title" required onChange={(e) => setTitle(e.target.value)} />
         <br />
 
-        <label>Start Date: </label>
-        <input type="text" value={sDate} placeholder="YYYY-MM-DD" required onChange={(e) => setSDate(e.target.value)} />
+        <TextInput type="text" label='Start Date: ' value={sDate} placeholder="yyyy-mm-dd" required onChange={(e) => setSDate(e.target.value)} />
         <br />
 
-        <label>End Date: </label>
-        <input type="text" value={eDate} placeholder="YYYY-MM-DD" onChange={(e) => setEDate(e.target.value)} />
+        <TextInput type="text" label='End Date: ' value={eDate} placeholder="yyyy-mm-dd" onChange={(e) => setEDate(e.target.value)} />
         <br />
 
-        <label>Description: </label>
-        <input type="text" value={description} placeholder="Enter Event Description" onChange={(e) => setDescription(e.target.value)} />
+        <TextArea type="text" label='Description: ' value={description} placeholder="Enter Event Description" onChange={(e) => setDescription(e.target.value)} />
         <br />
 
-        <label>Category: </label>
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="Event">Event</option>
-          <option value="Deadline">Deadline</option>
-        </select>
+        <Select
+          label='Category: '
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          options={['Event', 'Deadline']}>
+        </Select>
         <br />
 
-        <button type="submit">Add Event</button>
+        <Button type="submit" label='Add Event' primary />
 
-      </form>
+      </Form>
 
     </>
 

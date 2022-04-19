@@ -6,7 +6,8 @@ from email.mime.text import MIMEText
 from flask import Blueprint, jsonify, redirect, request
 from flask_login import current_user, logout_user
 from flask_dance.contrib.google import google
-from server.gmail import create_service
+
+# from server.gmail import create_service
 from server.models import Project, Todo, db, Event
 
 CLIENT_SECRET_FILE = "server/credentials.json"
@@ -14,7 +15,7 @@ API_NAME = "gmail"
 API_VERSION = "v1"
 SCOPES = ["https://mail.google.com/"]
 
-service = create_service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
+# service = create_service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
 # when adding your API route, use the format /<project_id>/your-endpoint
 # Then in function definition use def endpoint(project_id)
 # query for the particular project and then use current_user and project ID to add
@@ -135,6 +136,45 @@ def calendar(project_id):
             }
             for event in events
         ]
+    )
+
+
+@api.route("/getUserEvents")
+def userEvents():
+    "user events for calendar"
+    project = Project.query.all()
+
+    user_projects = list(map(lambda x: x.id, current_user.projects))
+
+    for data in user_projects:
+        events = Event.query.filter_by(project_id=data).all()
+
+    return jsonify(
+        [
+            {
+                "title": event.title,
+                "description": event.description,
+                "sDate": event.sDate,
+                "eDate": event.eDate,
+                "category": event.category,
+                "projectID": event.project_id,
+            }
+            for event in events
+        ]
+    )
+
+
+@api.route("/getUserProjects")
+def userProjects():
+    "user projects"
+
+    user_projects = list(map(lambda x: x.id, current_user.projects))
+
+    for data in user_projects:
+        projects = Project.query.filter_by(id=data).all()
+
+    return jsonify(
+        [{"name": project.name, "project_id": project.id,} for project in projects]
     )
 
 
