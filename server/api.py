@@ -1,12 +1,10 @@
 # pylint: disable=invalid-name
 # pylint: disable=no-member
-import base64
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from flask import Blueprint, jsonify, redirect, request
 from flask_login import current_user, login_required, logout_user
 from flask_dance.contrib.google import google
 import boto3
+
 # from server.gmail import create_service
 from server.models import Project, Todo, db, Event, File
 
@@ -16,11 +14,9 @@ API_VERSION = "v1"
 SCOPES = ["https://mail.google.com/"]
 
 
-
 # # commented out because of token expiry...
 #
 # service = create_service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
-
 
 
 # when adding your API route, use the format /<project_id>/your-endpoint
@@ -181,7 +177,13 @@ def userProjects():
         projects = Project.query.filter_by(id=data).all()
 
     return jsonify(
-        [{"name": project.name, "project_id": project.id,} for project in projects]
+        [
+            {
+                "name": project.name,
+                "project_id": project.id,
+            }
+            for project in projects
+        ]
     )
 
 
@@ -224,24 +226,6 @@ def add_event(project_id):
             for event in events
         ]
     )
-
-
-# @api.route("/email", methods=["POST"])
-# def send_email():
-# "sends an email (currently through personal mail)"
-# email_msg = "You have been invited to join our \
-# project on https://dynamico-swe.herokuapp.com/project/1."
-# data = request.json
-# mime_message = MIMEMultipart()
-# mime_message["to"] = data["email"]
-# mime_message["subject"] = "Dynamico Project Invite"
-# mime_message.attach(MIMEText(email_msg, "html"))
-# raw_string = base64.urlsafe_b64encode(mime_message.as_bytes()).decode()
-# message = (
-#     service.users().messages().send(userId="me", body={"raw": raw_string}).execute()
-# )
-# print(message)
-# return jsonify({"success": True})
 
 
 @api.route("/<project_id>/s3/list")
