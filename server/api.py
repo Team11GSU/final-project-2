@@ -1,23 +1,11 @@
 # pylint: disable=invalid-name
 # pylint: disable=no-member
+
 from flask import Blueprint, jsonify, redirect, request
 from flask_login import current_user, login_required, logout_user
 from flask_dance.contrib.google import google
 import boto3
-
-# from server.gmail import create_service
 from server.models import Project, Todo, db, Event, File
-
-CLIENT_SECRET_FILE = "server/credentials.json"
-API_NAME = "gmail"
-API_VERSION = "v1"
-SCOPES = ["https://mail.google.com/"]
-
-
-# # commented out because of token expiry...
-#
-# service = create_service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
-
 
 # when adding your API route, use the format /<project_id>/your-endpoint
 # Then in function definition use def endpoint(project_id)
