@@ -175,6 +175,24 @@ def userProjects():
     )
 
 
+@api.route("/<project_id>/getProjectMembers")
+def projectMembers(project_id):
+    "project members"
+
+    project = Project.query.filter_by(id=project_id).first()
+    members = list(filter(lambda x: x.email, project.members))
+
+    return jsonify(
+        [
+            {
+                "name": member.name,
+                "email": member.email,
+            }
+            for member in members
+        ]
+    )
+
+
 @api.route("/<project_id>/addEvent", methods=["POST"])
 def add_event(project_id):
     "add event"
