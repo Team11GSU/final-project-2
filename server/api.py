@@ -4,18 +4,25 @@ import base64
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from flask import Blueprint, jsonify, redirect, request
-from flask_login import current_user, logout_user
+from flask_login import current_user, login_required, logout_user
 from flask_dance.contrib.google import google
-
+import boto3
 # from server.gmail import create_service
-from server.models import Project, Todo, db, Event
+from server.models import Project, Todo, db, Event, File
 
 CLIENT_SECRET_FILE = "server/credentials.json"
 API_NAME = "gmail"
 API_VERSION = "v1"
 SCOPES = ["https://mail.google.com/"]
 
+
+
+# # commented out because of token expiry...
+#
 # service = create_service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
+
+
+
 # when adding your API route, use the format /<project_id>/your-endpoint
 # Then in function definition use def endpoint(project_id)
 # query for the particular project and then use current_user and project ID to add
@@ -54,6 +61,13 @@ def userdata():
             user_projects=user_projects,
         )
     return jsonify(logged_in=False)
+
+
+@api.route("/logout")
+def logout():
+    "logout"
+    logout_user()
+    return redirect("/")
 
 
 @api.route("/todo/<project_id>", methods=["GET", "POST"])
@@ -109,13 +123,6 @@ def todo_toggle(todo_id):
     # print(todo_id, toggled_todo.complete, flush=True)
 
     return jsonify({"switched": True})
-
-
-@api.route("/logout")
-def logout():
-    "logout"
-    logout_user()
-    return redirect("/")
 
 
 @api.route("/<project_id>/getEvent")
@@ -230,8 +237,60 @@ def send_email():
     mime_message["subject"] = "Dynamico Project Invite"
     mime_message.attach(MIMEText(email_msg, "html"))
     raw_string = base64.urlsafe_b64encode(mime_message.as_bytes()).decode()
-    message = (
-        service.users().messages().send(userId="me", body={"raw": raw_string}).execute()
-    )
-    print(message)
+    # message = (
+    #     service.users().messages().send(userId="me", body={"raw": raw_string}).execute()
+    # )
+    # print(message)
     return jsonify({"success": True})
+
+
+@api.route("/<project_id>/s3/list")
+def files_list(project_id):
+    "generates presigned s3 url to save file to"
+    S3_BUCKET = "team11-finalproject-dynamico"
+    # AWS_REGION = "us-east-1"
+
+    files = File.query.filter_by(project_id=project_id).all()
+
+    return jsonify(
+        {
+            "url": f"https://{S3_BUCKET}.s3.amazonaws.com/",
+            "files": [
+                {
+                    "id": file.id,
+                    "name": file.file_name,
+                    "type": file.file_type,
+                }
+                for file in files
+            ],
+        }
+    )
+
+
+@api.route("/<project_id>/s3/sign")
+def presigned_route(project_id):
+    "generates presigned s3 url to save file to"
+    S3_BUCKET = "team11-finalproject-dynamico"
+
+    file_name = request.args.get("filename")
+    file_type = request.args.get("filetype")
+    print(file_name, file_type, flush=True)
+    s3 = boto3.client("s3")
+    presigned_post = s3.generate_presigned_post(
+        Bucket=S3_BUCKET,
+        Key=f"Project_{project_id}_{file_name}",
+        Fields={"acl": "public-read", "Content-Type": file_type},
+        Conditions=[{"acl": "public-read"}, {"Content-Type": file_type}],
+        ExpiresIn=3600,
+    )
+
+    db.session.begin()
+    project = Project.query.filter_by(id=project_id).first()
+    file = File(
+        file_name=f"Project_{project_id}_{file_name}",
+        file_type=file_type,
+        user=current_user.name,
+    )
+    project.files.append(file)
+    db.session.commit()
+    return jsonify(presigned_post)
