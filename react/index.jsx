@@ -26,6 +26,7 @@ ReactDOM.render(
           <Route path="chat" element={<Chat />} />
           <Route path="files" element={<Files />} />
           <Route path="todo" element={<TodoPage />} />
+          <Route path="members" element={<Members />} />
         </Route>
 
       </Routes>
