@@ -25,13 +25,15 @@ export default function App() {
         <>
           Hello
           {' '}
-          {userData.google_data.email}
+          {userData.google_data.name}
           <p>
             Click
             {' '}
             <a href="/logout">here</a>
             {' '}
-            to log out
+            to log out of
+            {' '}
+            {userData.google_data.email}
           </p>
           <Form
             value={value}
