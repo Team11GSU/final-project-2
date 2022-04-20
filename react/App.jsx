@@ -49,7 +49,7 @@ export default function App() {
             }}
           >
             <FormField name="email" htmlFor="text-input-id" label="Send an email to invite a friend" required>
-              <TextInput id="text-input-id" name="email" />
+              <TextInput id="text-input-id" name="email" required />
             </FormField>
             <Box direction="row" gap="medium">
               <Button type="submit" primary label="Submit" />

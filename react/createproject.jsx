@@ -42,7 +42,7 @@ export default function CreateProject() {
             }}
           >
             <FormField name="name" htmlFor="text-input-id" label="Create or Join a Project" required>
-              <TextInput id="text-input-id" name="name" />
+              <TextInput id="text-input-id" name="name" required />
             </FormField>
             <Box direction="row" gap="medium">
               <Button type="submit" primary label="Submit" />
