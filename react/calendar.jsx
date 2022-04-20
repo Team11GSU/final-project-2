@@ -2,7 +2,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/jsx-no-bind */
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Form, TextInput, TextArea, Select } from 'grommet';
+import { Button, Form, TextInput, TextArea, Select } from 'grommet';
 import { useParams } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -88,6 +88,16 @@ export default function Calendar() {
 
   }
 
+  function colorCode(arg) {
+    if (arg.event.extendedProps.category == 'Event') {
+      arg.el.style.backgroundColor = '#059849';
+
+    } else {
+      arg.el.style.backgroundColor = '#980505';
+    }
+
+  }
+
 
   return (
 
@@ -104,6 +114,7 @@ export default function Calendar() {
         height={550}
         aspectRatio={1}
         displayEventEnd
+        eventDidMount={colorCode}
         events={data}
         eventClick={show}
 
