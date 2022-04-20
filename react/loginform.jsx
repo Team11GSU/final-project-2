@@ -1,7 +1,12 @@
 import {
-  Box, Card, CardHeader, Heading, CardBody, Text,
+  Box, Card, CardHeader, Heading, CardBody, Text, Button,
 } from 'grommet';
 
+const style = {
+  wrapper: {
+
+  }
+}
 export default function Login() {
   return (
     <Box fill="vertical" overflow="auto" align="center" flex="grow" justify="center">
@@ -12,15 +17,9 @@ export default function Login() {
           </Heading>
         </CardHeader>
         <CardBody pad="small" align="center" justify="center">
-          <Text>
-            <p>
-              Click
-              {' '}
-              <a href="/google">here</a>
-              {' '}
-              to login with a Google Account.
-            </p>
-          </Text>
+          <div style={style.wrapper}>
+            <p>Click <a href="/google">here</a> to login with a Google Account.</p>
+          </div>
         </CardBody>
       </Card>
     </Box>
