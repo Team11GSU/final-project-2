@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { Outlet, Link } from 'react-router-dom';
-import { Nav } from 'grommet';
+import { Nav, Card, CardBody, CardHeader, Box } from 'grommet';
 
 
 export default function UserProfile() {
@@ -20,6 +20,7 @@ export default function UserProfile() {
                     end: elem.eDate,
                     description: elem.description,
                     category: elem.category,
+                    projectID: elem.project_id
                 })));
             });
     }, []);
@@ -33,10 +34,26 @@ export default function UserProfile() {
             });
     }, []);
 
+    function show(info) {
+
+        alert(`Details: \n Title: ${info.event.title
+            }\n Description: ${info.event.extendedProps.description
+            }\n Start Date: ${info.event.start
+            }\n End Date: ${info.event.end
+            }\n Category: ${info.event.extendedProps.category
+            }\n ProjectID: ${info.event.extendedProps.projectID}`
+        );
+
+    }
+
+
+
     return (
         <><div>
             {/* Page where a list of your projects will be displayed as well as a calendar that shows are of your events */}
+
             <h1>User Profile Page </h1>
+
         </div>
             <FullCalendar
                 plugins={[dayGridPlugin]}
@@ -45,15 +62,25 @@ export default function UserProfile() {
                 aspectRatio={1}
                 displayEventEnd
                 events={data}
+                eventClick={show}
             />
 
-            <h2>Your Projects: </h2>
-            <Nav direction="row" pad="medium">
-                {projData.map((project) => (
-                    <Link to={`/project/${project.project_id}`}><h3>{project.name}</h3> </Link>
-                ))}
-            </Nav>
-            <Outlet />
+            <Box overflow="auto" align="left" justify="left">
+                <Card
+                    height='medium'
+                    width='medium'
+                    background='light-1'>
+                    <CardHeader pad='medium' align='left'><h1>Your Projects</h1></CardHeader>
+                    <CardBody pad='small'>
+                        <Nav direction="column" pad="medium">
+                            {projData.map((project) => (
+                                <Link to={`/project/${project.project_id}`}><h2>{project.name}</h2> </Link>
+                            ))}
+                        </Nav>
+                        <Outlet />
+                    </CardBody>
+                </Card>
+            </Box>
         </>
     );
 }

@@ -165,13 +165,7 @@ def userProjects():
         projects = Project.query.filter_by(id=data).all()
 
     return jsonify(
-        [
-            {
-                "name": project.name,
-                "project_id": project.id,
-            }
-            for project in projects
-        ]
+        [{"name": project.name, "project_id": project.id,} for project in projects]
     )
 
 
@@ -246,11 +240,7 @@ def files_list(project_id):
         {
             "url": f"https://{S3_BUCKET}.s3.amazonaws.com/",
             "files": [
-                {
-                    "id": file.id,
-                    "name": file.file_name,
-                    "type": file.file_type,
-                }
+                {"id": file.id, "name": file.file_name, "type": file.file_type,}
                 for file in files
             ],
         }
