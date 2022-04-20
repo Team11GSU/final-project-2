@@ -135,5 +135,4 @@ export default function UserProfile() {
             </Box>
         </>
     );
-
 }
