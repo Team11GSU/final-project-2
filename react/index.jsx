@@ -14,7 +14,6 @@ import UserProfile from './profile'
 import Members from './members'
 import CreateProject from './createproject'
 
-
 // entry point for app and Parcel
 const app = document.getElementById('react');
 ReactDOM.render(
@@ -31,6 +30,7 @@ ReactDOM.render(
           <Route path="files" element={<Files />} />
           <Route path="todo" element={<TodoPage />} />
           <Route path="members" element={<Members />} />
+          <Route index element={<TodoPage />} />      
         </Route>
 
       </Routes>

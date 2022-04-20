@@ -1,17 +1,30 @@
 # pylint: disable=invalid-name
 # pylint: disable=no-member
-
-from flask import Blueprint, jsonify, redirect, request
-from flask_login import current_user, login_required, logout_user
+import os
+from flask import Blueprint, jsonify, redirect, render_template, request
+from flask_login import current_user, logout_user
 from flask_dance.contrib.google import google
+from flask_mail import Mail, Message
 import boto3
+
+# from server.gmail import create_service
 from server.models import Project, Todo, db, Event, File
+
+CLIENT_SECRET_FILE = "server/credentials.json"
+API_NAME = "gmail"
+API_VERSION = "v1"
+SCOPES = ["https://mail.google.com/"]
+
+
+# # commented out because of token expiry...
+#
+# service = create_service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
 
 # when adding your API route, use the format /<project_id>/your-endpoint
 # Then in function definition use def endpoint(project_id)
 # query for the particular project and then use current_user and project ID to add
 
-api = Blueprint("api", __name__)
+api = Blueprint("api", __name__, template_folder="templates")
 
 
 @api.route("/userdata")
@@ -133,7 +146,6 @@ def calendar(project_id):
 @api.route("/getUserEvents")
 def userEvents():
     "user events for calendar"
-    project = Project.query.all()
 
     user_projects = list(map(lambda x: x.id, current_user.projects))
 
@@ -246,6 +258,46 @@ def add_event(project_id):
             for event in events
         ]
     )
+
+
+
+mail = Mail()
+
+# @api.route("/email", methods=["POST"])
+# def send_email():
+# "sends an email (currently through personal mail)"
+# email_msg = "You have been invited to join our \
+# project on https://dynamico-swe.herokuapp.com/project/1."
+# data = request.json
+# mime_message = MIMEMultipart()
+# mime_message["to"] = data["email"]
+# mime_message["subject"] = "Dynamico Project Invite"
+# mime_message.attach(MIMEText(email_msg, "html"))
+# raw_string = base64.urlsafe_b64encode(mime_message.as_bytes()).decode()
+# message = (
+#     service.users().messages().send(userId="me", body={"raw": raw_string}).execute()
+# )
+# print(message)
+# return jsonify({"success": True})
+
+
+@api.route("/email", methods=["POST"])
+def send_email():
+    "sends an email"
+    data = request.json
+    subject = "Dynamico Project Invite"
+    sender = os.getenv("MAIL_USERNAME")
+    recipient = data["email"]
+    msg = Message(subject, sender=sender, recipients=[recipient])
+    msg.html = render_template(
+        "email_invite.html",
+        url=f'https://dynamico-swe.herokuapp.com/project/{data["project"]}',
+    )
+    # msg.body = "You have been invited to join our \
+    #      project on https://dynamico-swe.herokuapp.com/project/1."
+    mail.send(msg)
+    return jsonify({"success": True})
+
 
 
 @api.route("/<project_id>/s3/list")

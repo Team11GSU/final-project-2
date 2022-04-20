@@ -7,7 +7,7 @@ import { useState } from 'react';
 import useUser from './utils/useUser';
 
 export default function App() {
-  const [value, setValue] = useState({});
+  const [email, setEmail] = useState({});
   const { isLoading, userData } = useUser();
   // useParams is used to ensure that the pages that displayed correspond to
   // the current project that the user is operating in
@@ -23,9 +23,13 @@ export default function App() {
       <h1>Dummy Project</h1>
       {userData != null && (
         <>
-          Hello
-          {' '}
-          {userData.google_data.name}
+          <span>
+            Hello
+            {' '}
+            {userData.google_data.email}
+            {' '}
+            <Link to="/profile">Your Profile</Link>
+          </span>
           <p>
             Click
             {' '}
@@ -36,15 +40,16 @@ export default function App() {
             {userData.google_data.email}
           </p>
           <Form
-            value={value}
-            onChange={(nextValue) => setValue(nextValue)}
+            email={email}
+            onChange={(nextemail) => setEmail(nextemail)}
             onSubmit={({ value }) => {
+              console.log(value);
               fetch('/email', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(value),
+                body: JSON.stringify({ ...value, project: params.projectID }),
               }).then(() => alert('Email will be sent.'));
             }}
           >
