@@ -62,6 +62,7 @@ export default function App() {
         <Link to={`/project/${params.projectID}/calendar`}>Calendar</Link>
         <Link to={`/project/${params.projectID}/todo`}>Todo</Link>
         <Link to={`/project/${params.projectID}/files`}>Files</Link>
+        <Link to={`/project/${params.projectID}/members`}>Members</Link>
         <Link to={`/profile`}>User Profile</Link>
       </Nav>
       <Outlet />
