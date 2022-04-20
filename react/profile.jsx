@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { Outlet, Link } from 'react-router-dom';
-import { Nav, Card, CardBody, CardHeader, Box } from 'grommet';
+import { Nav, Card, CardBody, CardHeader, Box, } from 'grommet';
 
 
 export default function UserProfile() {
     const [data, setData] = useState([]);
     const [projData, setProjData] = useState([]);
+    const [selector, setSelector] = useState('');
 
     useEffect(() => {
         fetch(`/getUserEvents`)
@@ -20,7 +21,7 @@ export default function UserProfile() {
                     end: elem.eDate,
                     description: elem.description,
                     category: elem.category,
-                    projectID: elem.project_id
+                    projectID: elem.projectID
                 })));
             });
     }, []);
@@ -46,13 +47,24 @@ export default function UserProfile() {
 
     }
 
+    function colorCode(arg) {
+        if (arg.event.extendedProps.category == 'Event') {
+            arg.el.style.backgroundColor = '#059849';
+
+        } else {
+            arg.el.style.backgroundColor = '#980505';
+        }
+
+    }
 
 
     return (
         <><div>
-            {/* Page where a list of your projects will be displayed as well as a calendar that shows are of your events */}
+            {/* Page where a list of your projects will be displayed as well as a calendar that shows all of your events */}
 
             <h1>User Profile Page </h1>
+
+
 
         </div>
             <FullCalendar
@@ -61,11 +73,12 @@ export default function UserProfile() {
                 height={550}
                 aspectRatio={1}
                 displayEventEnd
+                eventDidMount={colorCode}
                 events={data}
                 eventClick={show}
             />
 
-            <Box overflow="auto" align="left" justify="left">
+            <Box overflow="auto" align="left" justify="center">
                 <Card
                     height='medium'
                     width='medium'
@@ -74,7 +87,7 @@ export default function UserProfile() {
                     <CardBody pad='small'>
                         <Nav direction="column" pad="medium">
                             {projData.map((project) => (
-                                <Link to={`/project/${project.project_id}`}><h2>{project.name}</h2> </Link>
+                                <Link key={project.project_id} to={`/project/${project.project_id}`}><h2>{project.name}</h2> </Link>
                             ))}
                         </Nav>
                         <Outlet />
