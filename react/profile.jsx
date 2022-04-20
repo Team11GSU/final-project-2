@@ -40,11 +40,11 @@ export default function UserProfile() {
 
   function show(info) {
     alert(`Details: \n Title: ${info.event.title
-    }\n Description: ${info.event.extendedProps.description
-    }\n Start Date: ${info.event.start
-    }\n End Date: ${info.event.end
-    }\n Category: ${info.event.extendedProps.category
-    }\n ProjectID: ${info.event.extendedProps.projectID}`);
+      }\n Description: ${info.event.extendedProps.description
+      }\n Start Date: ${info.event.start
+      }\n End Date: ${info.event.end
+      }\n Category: ${info.event.extendedProps.category
+      }\n ProjectID: ${info.event.extendedProps.projectID}`);
   }
 
   return (
