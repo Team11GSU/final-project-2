@@ -1,8 +1,9 @@
 /* eslint-disable no-alert */
 import {
-  Box, Form, FormField, TextInput, Button,
+  Box, Form, FormField, TextInput, Button, Nav,
 } from 'grommet';
 import { useState } from 'react';
+import { Outlet, Link } from 'react-router-dom';
 import useUser from './utils/useUser';
 
 export default function CreateProject() {
@@ -40,7 +41,7 @@ export default function CreateProject() {
               }).then(() => alert('Project will be created.'));
             }}
           >
-            <FormField name="name" htmlFor="text-input-id" label="Name the Project">
+            <FormField name="name" htmlFor="text-input-id" label="Create or Join a Project">
               <TextInput id="text-input-id" name="name" />
             </FormField>
             <Box direction="row" gap="medium">
@@ -50,6 +51,10 @@ export default function CreateProject() {
         </>
 
       )}
+      <Nav direction="row" pad="medium">
+        <Link to="/profile">Then go to User Profile</Link>
+      </Nav>
+      <Outlet />
     </Box>
   );
 }
