@@ -41,7 +41,7 @@ export default function CreateProject() {
               }).then(() => alert('Project will be created.'));
             }}
           >
-            <FormField name="name" htmlFor="text-input-id" label="Create or Join a Project">
+            <FormField name="name" htmlFor="text-input-id" label="Create or Join a Project" required>
               <TextInput id="text-input-id" name="name" />
             </FormField>
             <Box direction="row" gap="medium">
