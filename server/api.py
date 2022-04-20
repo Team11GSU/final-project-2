@@ -23,7 +23,7 @@ def userdata():
         google_data = google.get(user_info_endpoint).json()
         db.session.begin()
         project = Project.query.filter_by(name="dummy").first()
-        # this code creates a dummmy project if it doesn't exit
+        # this code creates a dummmy project if it doesn't exist
         # and it adds new users to project if they aren't in
         if not project:
             project = Project(name="dummy")
@@ -165,7 +165,13 @@ def userProjects():
         projects = Project.query.filter_by(id=data).all()
 
     return jsonify(
-        [{"name": project.name, "project_id": project.id,} for project in projects]
+        [
+            {
+                "name": project.name,
+                "project_id": project.id,
+            }
+            for project in projects
+        ]
     )
 
 
@@ -184,6 +190,25 @@ def projectMembers(project_id):
             }
             for member in members
         ]
+    )
+
+
+@api.route("/createproject", methods=["POST"])
+def create_project():
+    "create project"
+    data = request.get_json()
+    db.session.begin()
+    project = Project.query.filter_by(name=data["name"]).first()
+    if not project:
+        project = Project(name=data["name"])
+        db.session.add(project)
+    member = list(filter(lambda x: x.email == current_user.email, project.members))
+    if not member:
+        project.members.append(current_user)
+    user_projects = list(map(lambda x: x.id, current_user.projects))
+    db.session.commit()
+    return jsonify(
+        user_projects=user_projects,
     )
 
 
@@ -240,7 +265,11 @@ def files_list(project_id):
         {
             "url": f"https://{S3_BUCKET}.s3.amazonaws.com/",
             "files": [
-                {"id": file.id, "name": file.file_name, "type": file.file_type,}
+                {
+                    "id": file.id,
+                    "name": file.file_name,
+                    "type": file.file_type,
+                }
                 for file in files
             ],
         }
