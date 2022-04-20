@@ -2,7 +2,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/jsx-no-bind */
 import React, { useEffect, useState } from 'react';
-import { Button, Form, TextInput, TextArea, Select } from 'grommet';
+import { Box, Button, Form, TextInput, TextArea, Select } from 'grommet';
 import { useParams } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -79,11 +79,13 @@ export default function Calendar() {
   }
 
   function show(info) {
+
     alert(`Details: \n Title: ${info.event.title
       }\n Description: ${info.event.extendedProps.description
       }\n Start Date: ${info.event.start
       }\n End Date: ${info.event.end
       }\n Category: ${info.event.extendedProps.category}`);
+
   }
 
 
