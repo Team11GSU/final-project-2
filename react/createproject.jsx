@@ -1,29 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Outlet, useParams } from 'react-router-dom';
+/* eslint-disable no-alert */
 import {
-  Table, TableHeader, TableRow, TableCell, TableBody,
+  Box, Form, FormField, TextInput, Button,
 } from 'grommet';
+import { useState } from 'react';
 import useUser from './utils/useUser';
 
 export default function CreateProject() {
-  const [projData, setProjData] = useState([]);
-  const params = useParams();
   const { userData } = useUser();
-
-  useEffect(() => {
-    fetch('/createproject')
-      .then((response) => response.json())
-      .then((pdata) => {
-        setProjData(pdata);
-      });
-  }, []);
+  const [value, setValue] = useState({});
 
   return (
-    <>
-      <div>
-        {/* Page where a list of your current project's members will be displayed */}
-        <h1>Project Creation Page </h1>
-        {userData != null && (
+    <Box pad="large">
+      {/* Page where a list of your current project's members will be displayed */}
+      <h1>Project Creation Page </h1>
+      {userData != null && (
         <>
           Hello
           {' '}
@@ -37,42 +27,29 @@ export default function CreateProject() {
             {' '}
             {userData.google_data.email}
           </p>
+          <Form
+            value={value}
+            onChange={(nextValue) => setValue(nextValue)}
+            onSubmit={({ value }) => {
+              fetch('/createproject', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(value),
+              }).then(() => alert('Project will be created.'));
+            }}
+          >
+            <FormField name="name" htmlFor="text-input-id" label="Name the Project">
+              <TextInput id="text-input-id" name="name" />
+            </FormField>
+            <Box direction="row" gap="medium">
+              <Button type="submit" primary label="Submit" />
+            </Box>
+          </Form>
         </>
 
-        )}
-      </div>
-      <h2>Invite Users: </h2>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableCell scope="col" border="bottom">
-              Name
-            </TableCell>
-            <TableCell scope="col" border="bottom">
-              Email
-            </TableCell>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell scope="row">
-              {projData.map((member) => (
-                <h5>
-                  {member.name}
-                </h5>
-              ))}
-            </TableCell>
-            <TableCell>
-              {projData.map((member) => (
-                <h5>
-                  {member.email}
-                </h5>
-              ))}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-      <Outlet />
-    </>
+      )}
+    </Box>
   );
 }
