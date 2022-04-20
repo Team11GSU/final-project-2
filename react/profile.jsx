@@ -86,8 +86,6 @@ export default function UserProfile() {
 
       <Box overflow="auto" align="left" justify="left">
         <Card
-          height="medium"
-          width="medium"
           background="light-1"
         >
           <CardHeader pad="medium" align="left"><h1>Your Projects</h1></CardHeader>

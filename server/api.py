@@ -34,9 +34,9 @@ def userdata():
             # print("here", flush=True)
             project.members.append(current_user)
         user_projects = list(map(lambda x: x.id, current_user.projects))
-        # print(
-        #     project.id, project.name, project.members, current_user.projects, flush=True
-        # )
+        print(
+            project.id, project.name, project.members, current_user.projects, flush=True
+        )
         db.session.commit()
         return jsonify(
             logged_in=True,
@@ -159,18 +159,13 @@ def userEvents():
 def userProjects():
     "user projects"
 
-    user_projects = list(map(lambda x: x.id, current_user.projects))
-
-    for data in user_projects:
-        projects = Project.query.filter_by(id=data).all()
-
     return jsonify(
         [
             {
                 "name": project.name,
                 "project_id": project.id,
             }
-            for project in projects
+            for project in current_user.projects
         ]
     )
 
