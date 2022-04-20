@@ -34,9 +34,9 @@ def userdata():
             # print("here", flush=True)
             project.members.append(current_user)
         user_projects = list(map(lambda x: x.id, current_user.projects))
-        print(
-            project.id, project.name, project.members, current_user.projects, flush=True
-        )
+        # print(
+        # project.id, project.name, project.members, current_user.projects, flush=True
+        # )
         db.session.commit()
         return jsonify(
             logged_in=True,
