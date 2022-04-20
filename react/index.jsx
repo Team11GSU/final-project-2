@@ -12,6 +12,7 @@ import Files from './files';
 import TodoPage from './todo';
 import UserProfile from './profile'
 import Members from './members'
+import CreateProject from './createproject'
 
 // entry point for app and Parcel
 const app = document.getElementById('react');
@@ -22,6 +23,7 @@ ReactDOM.render(
         <Route path="/" element={<Navigate replace to="/project/1" />} />
         <Route path="/loginform" element={<Login />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/createproject" element={<CreateProject />} />
         <Route path="/project/:projectID" element={<App />}>
           <Route path="calendar" element={<Calendar />} />
           <Route path="chat" element={<Chat />} />
