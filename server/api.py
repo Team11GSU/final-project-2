@@ -20,7 +20,6 @@ SCOPES = ["https://mail.google.com/"]
 #
 # service = create_service(CLIENT_SECRET_FILE, API_NAME, API_VERSION, SCOPES)
 
-
 # when adding your API route, use the format /<project_id>/your-endpoint
 # Then in function definition use def endpoint(project_id)
 # query for the particular project and then use current_user and project ID to add
@@ -37,7 +36,7 @@ def userdata():
         google_data = google.get(user_info_endpoint).json()
         db.session.begin()
         project = Project.query.filter_by(name="dummy").first()
-        # this code creates a dummmy project if it doesn't exit
+        # this code creates a dummmy project if it doesn't exist
         # and it adds new users to project if they aren't in
         if not project:
             project = Project(name="dummy")
@@ -49,7 +48,7 @@ def userdata():
             project.members.append(current_user)
         user_projects = list(map(lambda x: x.id, current_user.projects))
         # print(
-        #     project.id, project.name, project.members, current_user.projects, flush=True
+        # project.id, project.name, project.members, current_user.projects, flush=True
         # )
         db.session.commit()
         return jsonify(
@@ -172,19 +171,51 @@ def userEvents():
 def userProjects():
     "user projects"
 
-    user_projects = list(map(lambda x: x.id, current_user.projects))
-
-    for data in user_projects:
-        projects = Project.query.filter_by(id=data).all()
-
     return jsonify(
         [
             {
                 "name": project.name,
                 "project_id": project.id,
             }
-            for project in projects
+            for project in current_user.projects
         ]
+    )
+
+
+@api.route("/<project_id>/getProjectMembers")
+def projectMembers(project_id):
+    "project members"
+
+    project = Project.query.filter_by(id=project_id).first()
+    members = list(filter(lambda x: x.email, project.members))
+
+    return jsonify(
+        [
+            {
+                "name": member.name,
+                "email": member.email,
+            }
+            for member in members
+        ]
+    )
+
+
+@api.route("/createproject", methods=["POST"])
+def create_project():
+    "create project"
+    data = request.get_json()
+    db.session.begin()
+    project = Project.query.filter_by(name=data["name"]).first()
+    if not project:
+        project = Project(name=data["name"])
+        db.session.add(project)
+    member = list(filter(lambda x: x.email == current_user.email, project.members))
+    if not member:
+        project.members.append(current_user)
+    user_projects = list(map(lambda x: x.id, current_user.projects))
+    db.session.commit()
+    return jsonify(
+        user_projects=user_projects,
     )
 
 
@@ -229,6 +260,7 @@ def add_event(project_id):
     )
 
 
+
 mail = Mail()
 
 # @api.route("/email", methods=["POST"])
@@ -265,6 +297,7 @@ def send_email():
     #      project on https://dynamico-swe.herokuapp.com/project/1."
     mail.send(msg)
     return jsonify({"success": True})
+
 
 
 @api.route("/<project_id>/s3/list")
@@ -317,3 +350,4 @@ def presigned_route(project_id):
     project.files.append(file)
     db.session.commit()
     return jsonify(presigned_post)
+

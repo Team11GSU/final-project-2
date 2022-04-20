@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Blueprint
 
 # from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -49,8 +49,6 @@ app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
 app.config["MAIL_USE_TLS"] = False
 app.config["MAIL_USE_SSL"] = True
 
-
-
 app.register_blueprint(frontend)
 app.register_blueprint(api)
 app.register_blueprint(google_blueprint)
@@ -96,6 +94,20 @@ socketio.init_app(app)
 # def shutdown_request(exception=None):
 #     "to help prevent pool overflow"
 #     db.session.remove()
+bp = Blueprint("bp", __name__, template_folder="./build")
+
+
+@bp.route("/index")
+def index():
+    return render_template("index.html")
+
+
+app.register_blueprint(bp)
+
+
+@app.route("/landingPage")
+def landingPage():
+    return render_template("landingPage.html")
 
 
 with app.app_context():
