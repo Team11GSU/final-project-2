@@ -35,7 +35,9 @@ export default function App() {
             {' '}
             <a href="/logout">here</a>
             {' '}
-            to log out
+            to log out of
+            {' '}
+            {userData.google_data.email}
           </p>
           <Form
             email={email}
@@ -67,6 +69,9 @@ export default function App() {
         <Link to={`/project/${params.projectID}/calendar`}>Calendar</Link>
         <Link to={`/project/${params.projectID}/todo`}>Todo</Link>
         <Link to={`/project/${params.projectID}/files`}>Files</Link>
+        <Link to={`/project/${params.projectID}/members`}>Members</Link>
+        <Link to={`/profile`}>User Profile</Link>
+        <Link to={`/createproject`}>More Projects</Link>
       </Nav>
       <Outlet />
     </Box>

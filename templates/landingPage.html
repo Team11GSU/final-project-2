@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;900&display=swap');
+
+        .standard {
+            --mainColor: #200094f4;
+            --hoverColor: #7500ebea;
+            --SubArea: #151331eb;
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+
+        .big-wrapper {
+            position: fixed;
+            padding: 1.7rem 0 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+            min-height: 100vh;
+            overflow: hidden;
+            background: rgb(165, 255, 246);
+            background: linear-gradient(0deg, rgba(165, 255, 246, 1) 0%, rgba(145, 162, 255, 1) 100%);
+        }
+
+        .container {
+            position: relative;
+            margin: 0 auto;
+            padding: 0 3rem;
+            z-index: 10;
+            max-width: 81rem;
+            width: 100%;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .overlay {
+            display: none;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 28px;
+            line-height: 1.2;
+
+        }
+
+        .links ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+
+        .button {
+            margin: 10px;
+            font-size: 15px;
+            padding: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: #FFF;
+            width: 150px;
+            transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+            cursor: pointer;
+            display: inline-block;
+            border-radius: 25px;
+            background-image: linear-gradient(to right, #00d2ff 0%, #3a7bd5 51%, #00d2ff 100%)
+        }
+
+        .button:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+            margin: 8px 10px 12px;
+            background-position: right center;
+        }
+
+        .hamburger-menu {
+            position: relative;
+            z-index: 99;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            display: none;
+        }
+
+
+        .showcase-area .container {
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+            align-items: center;
+            justify-content: center;
+            top:-60px;
+        }
+
+        .big-title {
+            font-size: 28px;
+            color: rgb(11, 11, 11);
+            line-height: 1.4;
+            position: inherit;
+        }
+
+        .text {
+            color: var(--SubArea);
+            font-size: 20px;
+            margin: 1.9rem 0 2.5rem;
+            max-width: 600px;
+            line-height: 2.0;
+        }
+
+        .showcase {
+            border-radius: 50px;
+            width: 450px;
+            transform: translate(15%, 25px);
+
+        }
+    </style>
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dynamico</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+
+<body>
+
+    <div class="big-wrapper standard">
+        <header>
+            <div class="container">
+                <div class="logo">
+                    <h4>Dyamico</h4>
+                </div>
+                <div class="links">
+                    <ul>
+
+                        <li><a href="/google" class="button">Login</a></li>
+
+                    </ul>
+                </div>
+
+                <div class="overlay"></div>
+
+                <div class="hamburger-menu ">
+                </div>
+            </div>
+        </header>
+
+        <div class="showcase-area">
+            <div class="container">
+                <div class="left">
+                    <div class="big-title">
+                        <h1>Start Your Project Easily with Dynamico</h1>
+
+                    </div>
+                    <p class="text">
+                        Dynamico is a project management tool with chat, todolist, chalendar and dropbox feature all in
+                        one place.
+                    </p>
+
+                    <div>
+                        <a href="/google" class="button">Get started</a>
+                    </div>
+                </div>
+
+                <div class="right">
+                    <img src="https://griprecap.com/wp-content/uploads/2022/03/Best-project-management-software-for-freelancers.jpg"
+                        alt="Showcase Image" class="showcase" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>

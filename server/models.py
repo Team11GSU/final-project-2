@@ -7,7 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy(session_options={"autocommit": True})  # prevents pool overflow
 
-
 """
 IMPORTANT IMPORTANT IMPORTANT
 
@@ -55,6 +54,7 @@ class Message(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
     project = db.relationship("Project", backref=db.backref("messages"))
 
+
 class File(db.Model):
     "files model"
     id = db.Column(db.Integer, primary_key=True)
@@ -63,6 +63,7 @@ class File(db.Model):
     project = db.relationship("Project", backref=db.backref("files"))
     file_name = db.Column(db.String(256))
     file_type = db.Column(db.String(128))
+
 
 class Todo(db.Model):
     "todos model"

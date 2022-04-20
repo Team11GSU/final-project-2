@@ -79,11 +79,23 @@ export default function Calendar() {
   }
 
   function show(info) {
+
     alert(`Details: \n Title: ${info.event.title
       }\n Description: ${info.event.extendedProps.description
       }\n Start Date: ${info.event.start
       }\n End Date: ${info.event.end
       }\n Category: ${info.event.extendedProps.category}`);
+
+  }
+
+  function colorCode(arg) {
+    if (arg.event.extendedProps.category == 'Event') {
+      arg.el.style.backgroundColor = '#059849';
+
+    } else {
+      arg.el.style.backgroundColor = '#980505';
+    }
+
   }
 
 
@@ -102,6 +114,7 @@ export default function Calendar() {
         height={550}
         aspectRatio={1}
         displayEventEnd
+        eventDidMount={colorCode}
         events={data}
         eventClick={show}
 
