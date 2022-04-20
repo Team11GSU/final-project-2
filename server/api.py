@@ -193,21 +193,22 @@ def projectMembers(project_id):
     )
 
 
-@api.route("/createproject")
+@api.route("/createproject", methods=["POST"])
 def create_project():
     "create project"
-
-    project = Project.query.filter_by(id=1).first()
-    members = list(filter(lambda x: x.email, project.members))
-
+    data = request.get_json()
+    db.session.begin()
+    project = Project.query.filter_by(name=data["name"]).first()
+    if not project:
+        project = Project(name=data["name"])
+        db.session.add(project)
+    member = list(filter(lambda x: x.email == current_user.email, project.members))
+    if not member:
+        project.members.append(current_user)
+    user_projects = list(map(lambda x: x.id, current_user.projects))
+    db.session.commit()
     return jsonify(
-        [
-            {
-                "name": member.name,
-                "email": member.email,
-            }
-            for member in members
-        ]
+        user_projects=user_projects,
     )
 
 
