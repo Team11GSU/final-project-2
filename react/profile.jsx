@@ -1,3 +1,4 @@
+/* eslint linebreak-style: ["error", "windows"] */
 import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -45,7 +46,21 @@ export default function UserProfile() {
             }\n ProjectID: ${info.event.extendedProps.projectID}`
         );
 
-    }
+  useEffect(() => {
+    fetch('/getUserEvents')
+      .then((response) => response.json())
+      .then((cdata) => {
+        // console.log(cdata);
+        setData(cdata.map((elem) => ({
+          title: elem.title,
+          start: elem.sDate,
+          end: elem.eDate,
+          description: elem.description,
+          category: elem.category,
+          projectID: elem.project_id,
+        })));
+      });
+  }, []);
 
     function colorCode(arg) {
         if (arg.event.extendedProps.category == 'Event') {
@@ -58,14 +73,38 @@ export default function UserProfile() {
     }
 
 
-    return (
-        <><div>
-            {/* Page where a list of your projects will be displayed as well as a calendar that shows all of your events */}
+  function show(info) {
+    alert(`Details: \n Title: ${info.event.title
+    }\n Description: ${info.event.extendedProps.description
+    }\n Start Date: ${info.event.start
+    }\n End Date: ${info.event.end
+    }\n Category: ${info.event.extendedProps.category
+    }\n ProjectID: ${info.event.extendedProps.projectID}`);
+  }
 
-            <h1>User Profile Page </h1>
 
-
-
+  return (
+    <>
+      <div>
+        {/* Page where a list of your projects will be displayed as well as a calendar that shows are of your events */}
+        <Box pad="large">
+          {/* Checks that there is a user currently logged in through the Google Login flow */}
+          <h1>User Profile Page </h1>
+          {userData != null && (
+            <>
+              Hello
+              {' '}
+              {userData.google_data.name}
+              <p>
+                Click
+                {' '}
+                <a href="/logout">here</a>
+                {' '}
+                to log out of
+                {' '}
+                {userData.google_data.email}
+              </p>
+        </Box>
         </div>
             <FullCalendar
                 plugins={[dayGridPlugin]}
@@ -96,4 +135,5 @@ export default function UserProfile() {
             </Box>
         </>
     );
+
 }
