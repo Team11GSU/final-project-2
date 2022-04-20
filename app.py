@@ -45,8 +45,8 @@ app.config["S3_LOCATION"] = f"https://{S3_BUCKET}.{AWS_REGION}.amazonaws.com/"
 
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 465
-app.config["MAIL_USERNAME"] = "dynamico.dnmc@gmail.com"
-app.config["MAIL_PASSWORD"] = "team11isTheBEST"
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
 app.config["MAIL_USE_TLS"] = False
 app.config["MAIL_USE_SSL"] = True
 mail = Mail(app)
@@ -57,8 +57,9 @@ def send_email():
     "sends an email"
     data = request.get_json()
     subject = "Dynamico Project Invite"
+    sender = os.getenv("MAIL_USERNAME")
     recipients = [data["email"]]
-    msg = Message(subject, sender="dynamico.dnmc@gmail.com", recipients=recipients)
+    msg = Message(subject, sender=sender, recipients=recipients)
     msg.body = "You have been invited to join our \
          project on https://dynamico-swe.herokuapp.com/project/1."
     mail.send(msg)
