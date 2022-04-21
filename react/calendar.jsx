@@ -62,10 +62,10 @@ export default function Calendar() {
       ),
     })
       .then((response) => response.json())
-      .then(() => {
+      .then((cdata) => {
         // console.log(data);
         alert('New Event Saved!');
-        setData(data.map((elem) => ({
+        setData(cdata.map((elem) => ({
           title: elem.title,
           start: elem.sDate,
           end: elem.eDate,

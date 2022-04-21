@@ -3,10 +3,11 @@ import {
   Box, Form, FormField, TextInput, Button,
 } from 'grommet';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateProject() {
+  const navigate = useNavigate();
   const [name, setName] = useState({});
-
   return (
     <Box pad="medium" round border>
       {/* Page where a list of your current project's members will be displayed */}
@@ -21,7 +22,9 @@ export default function CreateProject() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(value),
-          }).then(() => alert('Project will be created.'));
+          })
+            .then((resp) => resp.json())
+            .then((data) => (data.success ? navigate(`/project/${data.id}`) : alert('Project already exists.')));
         }}
       >
         <FormField name="name" htmlFor="text-input-id" label="Project Name">

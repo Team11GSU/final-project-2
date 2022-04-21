@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
-  Nav, Card, CardBody, CardHeader, Box, Avatar, Header, Text, Grid,
+  Box, Avatar, Header, Text, Grid, Button,
 } from 'grommet';
 import { Logout, UserSettings } from 'grommet-icons';
 import useUser from './utils/useUser';
 import CreateProject from './createproject';
 
 export default function UserProfile() {
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [projData, setProjData] = useState([]);
-  const [selector, setSelector] = useState('');
+  const [invites, setInvites] = useState([]);
   const { userData } = useUser();
 
   useEffect(() => {
@@ -37,6 +38,15 @@ export default function UserProfile() {
       .then((pdata) => {
         // console.log(cdata);
         setProjData(pdata);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch('/getUserInvites')
+      .then((response) => response.json())
+      .then((idata) => {
+        // console.log(cdata);
+        setInvites(idata);
       });
   }, []);
 
@@ -86,29 +96,38 @@ export default function UserProfile() {
       </Header>
       <Box align="center" flex="grow" justify="center" direction="row">
         <Grid columns={['medium', 'large']} gap="large">
-          <Box align="center" justify="center" pad="small">
-            <Box overflow="auto" align="left" justify="center">
-              <Card
-                height="medium"
-                width="medium"
-                background="light-1"
-              >
-                <CardHeader pad="medium" align="left"><h1>Your Projects</h1></CardHeader>
-                <CardBody pad="small">
-                  <Nav direction="column" pad="medium">
-                    {projData.map((project) => (
-                      <Link key={project.project_id} to={`/project/${project.project_id}`}>
-                        <h2>{project.name}</h2>
-                        {' '}
-                      </Link>
-                    ))}
-                  </Nav>
-                </CardBody>
-              </Card>
+          <Box justify="center" pad="small" border round gap="small">
+            <Box align="left" justify="center" border round pad="medium">
+              <h2>Your Projects</h2>
+              {projData.map((project) => (
+                <Link key={project.project_id} to={`/project/${project.project_id}`}>
+                  <h3>{project.name}</h3>
+                  {' '}
+                </Link>
+              ))}
+            </Box>
+            <Box align="left" justify="center" border round pad="medium">
+              <h2>Your Invites</h2>
+              {invites.length > 0 ? invites.map((invite) => (
+                <Button
+                  key={invite.id}
+                  onClick={async () => {
+                    await fetch(`/accept/${invite.project_id}`);
+                    navigate(`/project/${invite.project_id}`);
+                  }}
+                >
+                  {invite.project_name}
+                  {' '}
+                  by
+                  {' '}
+                  {invite.invited_by}
+                </Button>
+              )) : <h3>You have no invites</h3>}
             </Box>
             <CreateProject />
           </Box>
           <Box>
+            <h2>Your Calendar</h2>
             <FullCalendar
               plugins={[dayGridPlugin]}
               initialView="dayGridMonth"
