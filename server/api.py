@@ -314,33 +314,36 @@ mail = Mail()
 # print(message)
 # return jsonify({"success": True})
 
+BASE_URL = "https://dynamico-2.herokuapp.com"
 
 @api.route("/email", methods=["POST"])
 def send_email():
     "sends an email"
     data = request.json
-    subject = "Dynamico Project Invite"
+    subject = f"You have been invited by {current_user.name} to Dynamico!"
     sender = os.getenv("MAIL_USERNAME")
     recipient = data["email"]
     invite = Invite.query.filter_by(email=recipient, project_id=int(data["project"])).first()
     if not invite:
         db.session.begin()
         project = Project.query.filter_by(id=int(data["project"])).first()
+        project_name=project.name
         invite = Invite(
             email=recipient,
             invited_by=current_user.name,
-            project_name=project.name,
+            project_name=project_name,
         )
         project.invites.append(invite)
         db.session.commit()
-    msg = Message(subject, sender=sender, recipients=[recipient])
-    msg.html = render_template(
-        "email_invite.html",
-        url=f'https://dynamico-swe.herokuapp.com/project/{data["project"]}',
-    )
-    # msg.body = "You have been invited to join our \
-    #      project on https://dynamico-swe.herokuapp.com/project/1."
-    mail.send(msg)
+        msg = Message(subject, sender=sender, recipients=[recipient])
+        msg.html = render_template(
+            "email_invite.html",
+            url=f'{BASE_URL}/project/{data["project"]}',
+            project_name=project_name,
+        )
+        # msg.body = "You have been invited to join our \
+        #      project on https://dynamico-swe.herokuapp.com/project/1."
+        mail.send(msg)
     return jsonify({"success": True})
 
 
