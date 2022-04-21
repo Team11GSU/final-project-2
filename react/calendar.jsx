@@ -2,7 +2,9 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/jsx-no-bind */
 import React, { useEffect, useState } from 'react';
-import { Button, Form, TextInput, TextArea, Select } from 'grommet';
+import {
+  Button, Form, TextInput, TextArea, Select, Box, Grid,
+} from 'grommet';
 import { useParams } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -79,75 +81,66 @@ export default function Calendar() {
   }
 
   function show(info) {
-
     alert(`Details: \n Title: ${info.event.title
-      }\n Description: ${info.event.extendedProps.description
-      }\n Start Date: ${info.event.start
-      }\n End Date: ${info.event.end
-      }\n Category: ${info.event.extendedProps.category}`);
-
+    }\n Description: ${info.event.extendedProps.description
+    }\n Start Date: ${info.event.start
+    }\n End Date: ${info.event.end
+    }\n Category: ${info.event.extendedProps.category}`);
   }
 
   function colorCode(arg) {
-    if (arg.event.extendedProps.category == 'Event') {
+    if (arg.event.extendedProps.category === 'Event') {
       arg.el.style.backgroundColor = '#059849';
-
     } else {
       arg.el.style.backgroundColor = '#980505';
     }
-
   }
-
 
   return (
 
-    <>
-      <h1>Calendar Page</h1>
+    <Box direction="row" align="center" justify="center">
       {/* The FullCalendar parent component is called with props to adjust what the calendar will
       look like once rendered. With the event prop, the json data that was stored in 'data' is
       looped through displaying all unique events that have been created. The eventClick prop
       serves to create a pop-up box when the user clicks on an event on the calendar.
       After which they will be able to see all of the relavant data for that particular event */}
-      <FullCalendar
-        plugins={[dayGridPlugin]}
-        initialView="dayGridMonth"
-        height={550}
-        aspectRatio={1}
-        displayEventEnd
-        eventDidMount={colorCode}
-        events={data}
-        eventClick={show}
-
-      />
-      {/* Standard form that is used to send the user's input to the REST API
+      <Grid columns={['large', 'medium']} gap="small">
+        <Box>
+          <FullCalendar
+            plugins={[dayGridPlugin]}
+            initialView="dayGridMonth"
+            height={550}
+            aspectRatio={1}
+            displayEventEnd
+            eventDidMount={colorCode}
+            events={data}
+            eventClick={show}
+          />
+        </Box>
+        <Box align="center" justify="center">
+          {/* Standard form that is used to send the user's input to the REST API
             On submission, having clicked the submit button, the handleSubmit
             function is called to handle that POST request */}
-      <Form onSubmit={handleSubmit}>
-        <TextInput type="text" label='Title: ' value={title} placeholder="Enter Title" required onChange={(e) => setTitle(e.target.value)} />
-        <br />
+          <Form onSubmit={handleSubmit}>
+          <Box align="center" justify="center" gap='xsmall'>
+            <TextInput type="text" label="Title: " value={title} placeholder="Enter Title" required onChange={(e) => setTitle(e.target.value)} />
+            <TextInput type="text" label="Start Date: " value={sDate} placeholder="yyyy-mm-dd" required onChange={(e) => setSDate(e.target.value)} />
+            <TextInput type="text" label="End Date: " value={eDate} placeholder="yyyy-mm-dd" onChange={(e) => setEDate(e.target.value)} />
+            <TextArea type="text" label="Description: " value={description} placeholder="Enter Event Description" onChange={(e) => setDescription(e.target.value)} />
+            <Select
+              label="Category: "
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              options={['Event', 'Deadline']}
+            />
 
-        <TextInput type="text" label='Start Date: ' value={sDate} placeholder="yyyy-mm-dd" required onChange={(e) => setSDate(e.target.value)} />
-        <br />
+            <Button type="submit" label="Add Event" primary />
+            </Box>
+          </Form>
+        </Box>
+      </Grid>
 
-        <TextInput type="text" label='End Date: ' value={eDate} placeholder="yyyy-mm-dd" onChange={(e) => setEDate(e.target.value)} />
-        <br />
-
-        <TextArea type="text" label='Description: ' value={description} placeholder="Enter Event Description" onChange={(e) => setDescription(e.target.value)} />
-        <br />
-
-        <Select
-          label='Category: '
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          options={['Event', 'Deadline']}>
-        </Select>
-        <br />
-
-        <Button type="submit" label='Add Event' primary />
-
-      </Form>
-
-    </>
+    </Box>
 
   );
 }

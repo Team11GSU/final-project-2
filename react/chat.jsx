@@ -14,7 +14,7 @@ export default function Chat() {
 
   return (
     <>
-      <h1>Chat Page</h1>
+      <h1>Chat</h1>
       {socket ? (
         <div className="chat-container">
           {/* The Messages component is used to display any new messages that
