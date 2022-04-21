@@ -10,7 +10,7 @@ function TodoTask({ todo, deleteTodo, handleChange }) {
     handleChange(todo.id);
   };
   return (
-    <Box direction="row" align="center" justify="between" pad="small">
+    <Box direction="row" align="center" justify="between" pad="medium" border round>
       {/* Grommet Checkbox is used to indicate the current status of
       the corresponding todo item which is followed by the name of the todo task */}
       <CheckBox label={todo.TaskName} checked={todo.complete} onChange={() => handleClick()} />

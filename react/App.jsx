@@ -7,15 +7,22 @@ import {
 import {
   Outlet, Link, NavLink, useParams,
 } from 'react-router-dom';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import useUser from './utils/useUser';
 import Members from './members';
 import LoadingScreen from './components/LoadingScreen';
 
 export default function App() {
   const [email, setEmail] = useState({});
-  const { isLoading, userData } = useUser();
   const params = useParams();
+  const [projData, setProjData] = useState({});
+  useEffect(() => {
+    fetch(`/${params.projectID}/getProjectData`)
+      .then((response) => response.json())
+      .then((pdata) => {
+        setProjData(pdata);
+      });
+  }, []);
   const InviteForm = useCallback(() => (
     <Box pad="large" background="light-2">
       <Form
@@ -40,6 +47,7 @@ export default function App() {
       </Form>
     </Box>
   ), []);
+  const { isLoading, userData } = useUser();
   // useParams is used to ensure that the pages that displayed correspond to
   // the current project that the user is operating in
   if (isLoading) {
@@ -69,7 +77,7 @@ export default function App() {
             </h3>
           </>
         )}
-        <h1>Dummy Project</h1>
+        <h1>{projData.name}</h1>
         <Nav direction="row" pad="medium" gap="medium">
           <NavLink to={`/project/${params.projectID}/chat`}><ChatOption /></NavLink>
           <Link to={`/project/${params.projectID}/calendar`}><Calendar /></Link>
@@ -77,7 +85,7 @@ export default function App() {
           <Link to={`/project/${params.projectID}/files`}><CloudDownload /></Link>
         </Nav>
         <DropButton
-          dropContent={<Members />}
+          dropContent={<Members projData={projData.members} />}
           dropAlign={{ top: 'bottom' }}
         >
           <Group />

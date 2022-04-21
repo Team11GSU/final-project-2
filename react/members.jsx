@@ -1,21 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+/* eslint-disable react/prop-types */
 import {
   Table, TableHeader, TableRow, TableCell, TableBody, Box,
 } from 'grommet';
 
-export default function Members() {
-  const [projData, setProjData] = useState([]);
-  const params = useParams();
-
-  useEffect(() => {
-    fetch(`/${params.projectID}/getProjectMembers`)
-      .then((response) => response.json())
-      .then((pdata) => {
-        setProjData(pdata);
-      });
-  }, []);
-
+export default function Members({ projData }) {
   return (
     <Box width="large" pad="xsmall">
       <Table width="medium">
