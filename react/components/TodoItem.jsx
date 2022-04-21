@@ -1,27 +1,29 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { CheckBox } from 'grommet';
+import {
+  CheckBox, Text, Box, Button,
+} from 'grommet';
+import { Close } from 'grommet-icons';
 
 function TodoTask({ todo, deleteTodo, handleChange }) {
   const handleClick = () => {
     handleChange(todo.id);
   };
   return (
-    <div className="CheckboxItem">
+    <Box direction="row" align="center" justify="between" pad="small">
       {/* Grommet Checkbox is used to indicate the current status of
       the corresponding todo item which is followed by the name of the todo task */}
-      <CheckBox checked={todo.complete} onChange={() => handleClick()} />
-      <span value={todo.id}>{todo.TaskName}</span>
-      <span
-        style={{ position: 'fixed', right: 20, cursor: 'pointer' }}
-        /* On click the todo item is removed from the list */
-        onClick={() => { deleteTodo(todo.id); }}
-        aria-hidden="true"
-      >
-        delete
-      </span>
-      <hr />
-    </div>
+      <CheckBox label={todo.TaskName} checked={todo.complete} onChange={() => handleClick()} />
+
+      <Button secondary onClick={() => { deleteTodo(todo.id); }}>
+        <Box direction="row" gap="xsmall" alignSelf="end" align="center" justify="center">
+          <Text color="red">Close</Text>
+          {' '}
+          <Close color="red" />
+        </Box>
+      </Button>
+
+    </Box>
   );
 }
 

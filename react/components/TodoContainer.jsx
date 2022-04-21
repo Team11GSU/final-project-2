@@ -60,7 +60,7 @@ function TodoContainer() {
             handleChange={handleClick}
           />
         ),
-      ) : <p>your task is clean</p>}
+      ) : <h1>This project has no to-dos currently...</h1>}
 
       {/* TodoForms component is used to get the user inputs */}
       <TodoForms setTodoList={setTodoList} />

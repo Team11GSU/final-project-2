@@ -1,4 +1,5 @@
 from os import getenv
+from flask import redirect
 from flask_dance.contrib.google import make_google_blueprint
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_dance.consumer import oauth_authorized
@@ -47,5 +48,4 @@ def google_logged_in(blueprint, token):
         db.session.add_all([user, oauth])
         db.session.commit()
         login_user(user)
-
-    return False
+    return redirect("/profile")
