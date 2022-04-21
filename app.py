@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, Blueprint
+from flask import Flask, render_template, request
 
 # from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -110,20 +110,6 @@ socketio.init_app(app)
 # def shutdown_request(exception=None):
 #     "to help prevent pool overflow"
 #     db.session.remove()
-bp = Blueprint("bp", __name__, template_folder="./build")
-
-
-@bp.route("/index")
-def index():
-    return render_template("index.html")
-
-
-app.register_blueprint(bp)
-
-
-@app.route("/landingPage")
-def landingPage():
-    return render_template("landingPage.html")
 
 
 with app.app_context():
