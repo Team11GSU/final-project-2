@@ -49,7 +49,7 @@ export default function Files() {
 
   return (
     <>
-      <h1>Files Page</h1>
+      <h1>Files</h1>
       <FileInput
         name="file"
         onChange={getSignedURL}

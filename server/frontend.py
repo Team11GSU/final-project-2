@@ -1,9 +1,16 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, redirect, render_template
+from flask_login import current_user
 
 frontend = Blueprint("frontend", __name__, template_folder="templates")
 
-
 @frontend.route("/")
+@frontend.route("/landingPage")
+def landing_page():
+    "landing page"
+    if current_user.is_authenticated:
+        return redirect("/profile")
+    return render_template("landingPage.html")
+
 @frontend.route("/loginform")
 @frontend.route("/profile")
 @frontend.route("/project/<project_id>/")
