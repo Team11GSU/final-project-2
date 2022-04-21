@@ -22,6 +22,14 @@ user_project = db.Table(
     db.Column("project_id", db.Integer, db.ForeignKey("project.id")),
 )
 
+class Invite(db.Model):
+    "invites storage model"
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(256))
+    invited_by = db.Column(db.String(256))
+    project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
+    project_name = db.Column(db.String(256))
+    project = db.relationship("Project", backref=db.backref("invites"))
 
 class User(db.Model, UserMixin):
     "user model"

@@ -1,19 +1,19 @@
 # pylint: disable=invalid-name
 # pylint: disable=no-member
 import os
-from flask import Blueprint, jsonify, redirect, render_template, request
+from flask import Blueprint, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, logout_user
 from flask_dance.contrib.google import google
 from flask_mail import Mail, Message
 import boto3
 
 # from server.gmail import create_service
-from server.models import Project, Todo, db, Event, File
+from server.models import Invite, Project, Todo, db, Event, File
 
-CLIENT_SECRET_FILE = "server/credentials.json"
-API_NAME = "gmail"
-API_VERSION = "v1"
-SCOPES = ["https://mail.google.com/"]
+# CLIENT_SECRET_FILE = "server/credentials.json"
+# API_NAME = "gmail"
+# API_VERSION = "v1"
+# SCOPES = ["https://mail.google.com/"]
 
 
 # # commented out because of token expiry...
@@ -34,28 +34,28 @@ def userdata():
     user_info_endpoint = "oauth2/v2/userinfo"
     if current_user.is_authenticated and google.authorized:
         google_data = google.get(user_info_endpoint).json()
-        db.session.begin()
-        project = Project.query.filter_by(name="dummy").first()
+        # db.session.begin()
+        # project = Project.query.filter_by(name="dummy").first()
         # this code creates a dummmy project if it doesn't exist
         # and it adds new users to project if they aren't in
-        if not project:
-            project = Project(name="dummy")
-            db.session.add(project)
-        member = list(filter(lambda x: x.email == current_user.email, project.members))
+        # if not project:
+        #     project = Project(name="dummy")
+        #     db.session.add(project)
+        # member = list(filter(lambda x: x.email == current_user.email, project.members))
         # print(member, flush=True)
-        if not member:
-            # print("here", flush=True)
-            project.members.append(current_user)
-        user_projects = list(map(lambda x: x.id, current_user.projects))
+        # if not member:
+        #     # print("here", flush=True)
+        #     project.members.append(current_user)
+        # user_projects = list(map(lambda x: x.id, current_user.projects))
         # print(
         # project.id, project.name, project.members, current_user.projects, flush=True
         # )
-        db.session.commit()
+        # db.session.commit()
         return jsonify(
             logged_in=True,
             google_data=google_data,
             fetch_url=google.base_url + user_info_endpoint,
-            user_projects=user_projects,
+            # user_projects=user_projects,
         )
     return jsonify(logged_in=False)
 
@@ -148,9 +148,11 @@ def userEvents():
     "user events for calendar"
 
     user_projects = list(map(lambda x: x.id, current_user.projects))
+    print("user+pro", user_projects)
+    events = []
 
     for data in user_projects:
-        events = Event.query.filter_by(project_id=data).all()
+        events += Event.query.filter_by(project_id=data).all()
 
     return jsonify(
         [
@@ -170,7 +172,6 @@ def userEvents():
 @api.route("/getUserProjects")
 def userProjects():
     "user projects"
-
     return jsonify(
         [
             {
@@ -182,21 +183,53 @@ def userProjects():
     )
 
 
-@api.route("/<project_id>/getProjectMembers")
-def projectMembers(project_id):
-    "project members"
+@api.route("/getUserInvites")
+def getUserInvites():
+    "user invites"
+    invites = Invite.query.filter_by(email=current_user.email).all()
+    return jsonify(
+        [
+            {
+                "id": invite.id,
+                "invited_by": invite.invited_by,
+                "project_id": invite.project_id,
+                "project_name": invite.project_name,
+            }
+            for invite in invites
+        ]
+    )
+
+@api.route("/accept/<project_id>")
+def accept_invite(project_id):
+    "user invites"
+    print("here", project_id, flush=True)
+    db.session.begin()
+    Invite.query.filter_by(email=current_user.email, project_id=project_id).delete()
+    project = Project.query.filter_by(id=project_id).first()
+    project.members.append(current_user)
+    print(project.members, flush=True)
+    db.session.commit()
+    return jsonify({"success": True})
+
+
+@api.route("/<project_id>/getProjectData")
+def get_project_data(project_id):
+    "project data"
 
     project = Project.query.filter_by(id=project_id).first()
     members = list(filter(lambda x: x.email, project.members))
 
     return jsonify(
-        [
-            {
-                "name": member.name,
-                "email": member.email,
-            }
-            for member in members
-        ]
+        {
+            "name": project.name,
+            "members": [
+                {
+                    "name": member.name,
+                    "email": member.email,
+                }
+                for member in members
+            ],
+        }
     )
 
 
@@ -208,15 +241,17 @@ def create_project():
     project = Project.query.filter_by(name=data["name"]).first()
     if not project:
         project = Project(name=data["name"])
-        db.session.add(project)
-    member = list(filter(lambda x: x.email == current_user.email, project.members))
-    if not member:
         project.members.append(current_user)
-    user_projects = list(map(lambda x: x.id, current_user.projects))
-    db.session.commit()
-    return jsonify(
-        user_projects=user_projects,
-    )
+        db.session.add(project)
+        db.session.commit()
+        print(project.id)
+        return jsonify({"success": True, "id": project.id})
+    else:
+        return jsonify({"success": False})
+    # member = list(filter(lambda x: x.email == current_user.email, project.members))
+    # if not member:
+    #
+    # user_projects = list(map(lambda x: x.id, current_user.projects))
 
 
 @api.route("/<project_id>/addEvent", methods=["POST"])
@@ -260,7 +295,6 @@ def add_event(project_id):
     )
 
 
-
 mail = Mail()
 
 # @api.route("/email", methods=["POST"])
@@ -288,6 +322,17 @@ def send_email():
     subject = "Dynamico Project Invite"
     sender = os.getenv("MAIL_USERNAME")
     recipient = data["email"]
+    invite = Invite.query.filter_by(email=recipient, project_id=int(data["project"])).first()
+    if not invite:
+        db.session.begin()
+        project = Project.query.filter_by(id=int(data["project"])).first()
+        invite = Invite(
+            email=recipient,
+            invited_by=current_user.name,
+            project_name=project.name,
+        )
+        project.invites.append(invite)
+        db.session.commit()
     msg = Message(subject, sender=sender, recipients=[recipient])
     msg.html = render_template(
         "email_invite.html",
@@ -297,7 +342,6 @@ def send_email():
     #      project on https://dynamico-swe.herokuapp.com/project/1."
     mail.send(msg)
     return jsonify({"success": True})
-
 
 
 @api.route("/<project_id>/s3/list")
@@ -350,4 +394,3 @@ def presigned_route(project_id):
     project.files.append(file)
     db.session.commit()
     return jsonify(presigned_post)
-

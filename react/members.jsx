@@ -1,33 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Outlet, useParams } from 'react-router-dom';
+/* eslint-disable react/prop-types */
 import {
-  Table, TableHeader, TableRow, TableCell, TableBody,
+  Table, TableHeader, TableRow, TableCell, TableBody, Box,
 } from 'grommet';
 
-export default function Members() {
-  const [projData, setProjData] = useState([]);
-  const params = useParams();
-
-  useEffect(() => {
-    fetch(`/${params.projectID}/getProjectMembers`)
-      .then((response) => response.json())
-      .then((pdata) => {
-        setProjData(pdata);
-      });
-  }, []);
-
+export default function Members({ projData }) {
   return (
-    <>
-      <div>
-        {/* Page where a list of your current project's members will be displayed */}
-        <h1>Members Page </h1>
-      </div>
-      <h2>Projects Members: </h2>
-      <Table>
+    <Box width="large" pad="xsmall">
+      <Table width="medium">
         <TableHeader>
           <TableRow>
             <TableCell scope="col" border="bottom">
-              Name
+              Project Member
             </TableCell>
             <TableCell scope="col" border="bottom">
               Email
@@ -53,7 +36,6 @@ export default function Members() {
           </TableRow>
         </TableBody>
       </Table>
-      <Outlet />
-    </>
+    </Box>
   );
 }

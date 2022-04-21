@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-  Box, Card, CardBody, CardHeader, CardFooter,
+  Box, Grid, Avatar, Markdown, Text,
 } from 'grommet';
 // to be replaced with Grommet components later
 
@@ -40,23 +40,32 @@ function Messages({ socket }) {
   }, [socket]);
 
   return (
-    <Box>
+    <Box pad={{ bottom: 'xlarge' }}>
       {[...Object.values(messages)]
         .sort((a, b) => a.time - b.time)
         .map((message) => (
-          <Card
-            key={message.id}
-            title={`Sent at ${new Date(message.time).toLocaleTimeString()}`}
-          >
-            <CardHeader>
-              <span className="user">
-                {message.user}
-                :
-              </span>
-            </CardHeader>
-            <CardBody><span className="message">{message.value}</span></CardBody>
-            <CardFooter><span className="date">{new Date(message.time).toLocaleTimeString()}</span></CardFooter>
-          </Card>
+          <Grid key={message.id} columns={['xsmall', 'large']}>
+            <Box align="end" pad="small">
+              <Avatar background="dark-4" align="center" flex={false} justify="center" overflow="hidden" round="full">
+                {message.user[0]}
+              </Avatar>
+            </Box>
+            <Box align="start" justify="center">
+              <Box align="center" justify="center" direction="row" gap="small">
+                <Text size="large" weight="bold">{message.user}</Text>
+                <Text textAlign="end">
+                  at
+                  {' '}
+                  {new Date(message.time).toLocaleDateString()}
+                  {' '}
+                  {new Date(message.time).toLocaleTimeString()}
+                </Text>
+              </Box>
+              <Box wrap>
+                <Markdown>{message.value}</Markdown>
+              </Box>
+            </Box>
+          </Grid>
         ))}
     </Box>
   );

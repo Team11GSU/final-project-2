@@ -1,60 +1,39 @@
 /* eslint-disable no-alert */
 import {
-  Box, Form, FormField, TextInput, Button, Nav,
+  Box, Form, FormField, TextInput, Button,
 } from 'grommet';
 import { useState } from 'react';
-import { Outlet, Link } from 'react-router-dom';
-import useUser from './utils/useUser';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateProject() {
-  const { userData } = useUser();
-  const [value, setValue] = useState({});
-
+  const navigate = useNavigate();
+  const [name, setName] = useState({});
   return (
-    <Box pad="large">
+    <Box pad="medium" round border>
       {/* Page where a list of your current project's members will be displayed */}
-      <h1>Project Creation Page </h1>
-      {userData != null && (
-        <>
-          Hello
-          {' '}
-          {userData.google_data.name}
-          <p>
-            Click
-            {' '}
-            <a href="/logout">here</a>
-            {' '}
-            to log out of
-            {' '}
-            {userData.google_data.email}
-          </p>
-          <Form
-            value={value}
-            onChange={(nextValue) => setValue(nextValue)}
-            onSubmit={({ value }) => {
-              fetch('/createproject', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(value),
-              }).then(() => alert('Project will be created.'));
-            }}
-          >
-            <FormField name="name" htmlFor="text-input-id" label="Create or Join a Project">
-              <TextInput id="text-input-id" name="name" />
-            </FormField>
-            <Box direction="row" gap="medium">
-              <Button type="submit" primary label="Submit" />
-            </Box>
-          </Form>
-        </>
-
-      )}
-      <Nav direction="row" pad="medium">
-        <Link to="/profile">Then go to User Profile</Link>
-      </Nav>
-      <Outlet />
+      <h3>Create a Project</h3>
+      <Form
+        value={name}
+        onChange={(nextValue) => setName(nextValue)}
+        onSubmit={({ value }) => {
+          fetch('/createproject', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(value),
+          })
+            .then((resp) => resp.json())
+            .then((data) => (data.success ? navigate(`/project/${data.id}`) : alert('Project already exists.')));
+        }}
+      >
+        <FormField name="name" htmlFor="text-input-id" label="Project Name">
+          <TextInput id="text-input-id" name="name" />
+        </FormField>
+        <Box direction="row" gap="medium">
+          <Button type="submit" primary label="Submit" />
+        </Box>
+      </Form>
     </Box>
   );
 }

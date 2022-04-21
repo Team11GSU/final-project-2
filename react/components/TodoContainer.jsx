@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Box } from 'grommet';
 import TodoTask from './TodoItem';
 import TodoForms from './TodoForms';
 
@@ -47,11 +48,14 @@ function TodoContainer() {
   };
 
   return (
-    <div>
+    <Box gap="xsmall">
       {/* A map is used to print all of the todo items that were fetched
        If there are no todo items currently, a message is displayed to indicate that
        This is also where the handleDelete and handleClick functions are called */ }
-      {todoList.length > 0 ? todoList.map(
+      {todoList.length > 0
+        ? <h1>Project Todos</h1>
+        : <h1>This project has no to-dos currently...</h1>}
+      {todoList.map(
         (todo) => (
           <TodoTask
             todo={todo}
@@ -60,12 +64,11 @@ function TodoContainer() {
             handleChange={handleClick}
           />
         ),
-      ) : <p>your task is clean</p>}
-
+      )}
       {/* TodoForms component is used to get the user inputs */}
       <TodoForms setTodoList={setTodoList} />
 
-    </div>
+    </Box>
   );
 }
 

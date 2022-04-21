@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-  Box, Button, Form, FormField, TextInput,
+  Box, Button, Form, FormField, TextArea,
 } from 'grommet';
 
 function NewMessage({ socket }) {
@@ -20,7 +20,15 @@ function NewMessage({ socket }) {
 
   return (
     // Form used to take the user's input and send it to the database via socket.io
-    <Box>
+    <Box
+      style={{
+        position: 'absolute',
+        bottom: '10px',
+        width: '80%',
+      }}
+      round="small"
+      border
+    >
       <Form
         onSubmit={submitForm}
         message={message}
@@ -28,10 +36,17 @@ function NewMessage({ socket }) {
           setMessage(newmessage);
         }}
       >
-        <FormField name="message" required>
-          <TextInput name="message" type="message" placeholder="Type your message" />
-        </FormField>
-        <Button type="submit" label="Send" primary />
+        <Box round="small" background="white" pad="small" direction="row" gap="10px" align="stretch" justify="around">
+          <FormField name="message" required width="100%">
+            <TextArea
+              resize={false}
+              name="message"
+              type="message"
+              placeholder="Type your message here, you can use *Markdown*!"
+            />
+          </FormField>
+          <Button type="submit" label="Send" primary />
+        </Box>
       </Form>
     </Box>
   );

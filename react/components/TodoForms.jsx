@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-  Button, Form, TextInput,
+  Button, Form, TextInput, Box,
 } from 'grommet';
 // This files uses the same fetch POST convention as other files to
 // send the todo items to the database when they are submitted
@@ -32,13 +32,23 @@ function TodoForms({ setTodoList }) {
   };
 
   return (
-    <div className="TodoForm">
-      <Form onSubmit={handleSubmit}>
-        <TextInput type="text" value={userInput} name="name" onChange={onChange} placeholder="Enter your Task" required />
 
-        <Button type="submit" label="Submit" primary />
+    <Box
+      style={{
+        position: 'absolute',
+        bottom: '10px',
+        width: '80%',
+      }}
+      round="small"
+      border
+    >
+      <Form onSubmit={handleSubmit}>
+        <Box round="small" background="white" pad="small" direction="row" gap="10px" align="stretch" justify="around">
+          <TextInput type="text" value={userInput} name="name" onChange={onChange} placeholder="Enter your Task" required />
+          <Button type="submit" label="Submit" primary />
+        </Box>
       </Form>
-    </div>
+    </Box>
 
   );
 }
