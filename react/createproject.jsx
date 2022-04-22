@@ -11,7 +11,8 @@ export default function CreateProject() {
   const [name, setName] = useState({});
   return (
     <Box pad="medium" round border>
-      {/* Page where a list of your current project's members will be displayed */}
+      {/* Form to take a name for a Project, if it does not exist the new project is created and the user is redirected */}
+      {/* If the Project does exist already, the users is notified of the failed attempt */}
       <h3>
         <Tools color="accent-4" />
         {' '}

@@ -20,6 +20,7 @@ export default function UserProfile() {
   const [invites, setInvites] = useState([]);
   const { userData } = useUser();
 
+  // useEffect is used to continuously get all of the events from projects that the current user is member of
   useEffect(() => {
     fetch('/getUserEvents')
       .then((response) => response.json())
@@ -36,6 +37,7 @@ export default function UserProfile() {
       });
   }, []);
 
+  //Similar usage of useEffect is employed to retrieve a list of all projects the user is a member of 
   useEffect(() => {
     fetch('/getUserProjects')
       .then((response) => response.json())
@@ -45,6 +47,7 @@ export default function UserProfile() {
       });
   }, []);
 
+  //Similar usage to retrieve all of the user's pending invites to other projects
   useEffect(() => {
     fetch('/getUserInvites')
       .then((response) => response.json())
@@ -115,11 +118,16 @@ export default function UserProfile() {
               ))}
             </Box>
             <Box align="left" justify="center" border round pad="medium">
+
+              {/* Area designated for pending invites, onclick the invite is accepted and the user is redirected to that project page */}
+              <h2>Your Invites</h2>
+
               <h2>
                 <Inbox color="accent-3" />
                 {' '}
                 Your Invites
               </h2>
+
               {invites.length > 0 ? invites.map((invite) => (
                 <Button
                   key={invite.id}
