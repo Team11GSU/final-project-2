@@ -14,7 +14,11 @@ function TodoTask({ todo, deleteTodo, handleChange }) {
       {/* Grommet Checkbox is used to indicate the current status of
       the corresponding todo item which is followed by the name of the todo task */}
       <CheckBox label={todo.TaskName} checked={todo.complete} onChange={() => handleClick()} />
-
+      <Box>
+        <Text>
+          {todo.user}
+        </Text>
+      </Box>
       <Button secondary onClick={() => { deleteTodo(todo.id); }}>
         <Box direction="row" gap="xsmall" alignSelf="end" align="center" justify="center">
           <Text color="pink">Remove</Text>

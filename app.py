@@ -105,5 +105,5 @@ if __name__ == "__main__":
         app,
         debug=True,
         host=os.getenv("IP", "0.0.0.0"),
-        port=int(os.getenv("PORT", "8080")),  # change to 5000 if issues
+        port=int(os.getenv("PORT", "5000")),  # change to 5000 if issues
     )
