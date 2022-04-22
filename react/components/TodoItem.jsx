@@ -3,7 +3,7 @@ import React from 'react';
 import {
   CheckBox, Text, Box, Button,
 } from 'grommet';
-import { Close } from 'grommet-icons';
+import { Erase } from 'grommet-icons';
 
 function TodoTask({ todo, deleteTodo, handleChange }) {
   const handleClick = () => {
@@ -17,9 +17,9 @@ function TodoTask({ todo, deleteTodo, handleChange }) {
 
       <Button secondary onClick={() => { deleteTodo(todo.id); }}>
         <Box direction="row" gap="xsmall" alignSelf="end" align="center" justify="center">
-          <Text color="red">Close</Text>
+          <Text color="pink">Remove</Text>
           {' '}
-          <Close color="red" />
+          <Erase color="pink" />
         </Box>
       </Button>
 

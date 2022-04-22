@@ -10,7 +10,7 @@ export default function Members({ projData }) {
         <TableHeader>
           <TableRow>
             <TableCell scope="col" border="bottom">
-              Project Member
+              Member
             </TableCell>
             <TableCell scope="col" border="bottom">
               Email

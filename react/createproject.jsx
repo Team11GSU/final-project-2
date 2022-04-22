@@ -1,9 +1,10 @@
 /* eslint-disable no-alert */
 import {
-  Box, Form, FormField, TextInput, Button,
+  Box, Form, FormField, TextInput, Button, Text,
 } from 'grommet';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Configure, Tools } from 'grommet-icons';
 
 export default function CreateProject() {
   const navigate = useNavigate();
@@ -11,7 +12,11 @@ export default function CreateProject() {
   return (
     <Box pad="medium" round border>
       {/* Page where a list of your current project's members will be displayed */}
-      <h3>Create a Project</h3>
+      <h3>
+        <Tools color="accent-4" />
+        {' '}
+        Create a Project
+      </h3>
       <Form
         value={name}
         onChange={(nextValue) => setName(nextValue)}
@@ -28,10 +33,16 @@ export default function CreateProject() {
         }}
       >
         <FormField name="name" htmlFor="text-input-id" label="Project Name">
-          <TextInput id="text-input-id" name="name" />
+          <TextInput id="text-input-id" name="name" required />
         </FormField>
         <Box direction="row" gap="medium">
-          <Button type="submit" primary label="Submit" />
+          <Button type="submit">
+            <Box direction="row" gap="xsmall" alignSelf="end" align="center" justify="center">
+              <Text color="brand">Build</Text>
+              {' '}
+              <Configure color="brand" />
+            </Box>
+          </Button>
         </Box>
       </Form>
     </Box>

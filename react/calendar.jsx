@@ -3,11 +3,12 @@
 /* eslint-disable react/jsx-no-bind */
 import React, { useEffect, useState } from 'react';
 import {
-  Button, Form, TextInput, TextArea, Select, Box, Grid,
+  Button, Form, TextInput, TextArea, Select, Box, Grid, Text,
 } from 'grommet';
 import { useParams } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import { ScheduleNew } from 'grommet-icons';
 
 export default function Calendar() {
   /* useParams is used to ensure that the calendar
@@ -122,19 +123,25 @@ export default function Calendar() {
             On submission, having clicked the submit button, the handleSubmit
             function is called to handle that POST request */}
           <Form onSubmit={handleSubmit}>
-          <Box align="center" justify="center" gap='xsmall'>
-            <TextInput type="text" label="Title: " value={title} placeholder="Enter Title" required onChange={(e) => setTitle(e.target.value)} />
-            <TextInput type="text" label="Start Date: " value={sDate} placeholder="yyyy-mm-dd" required onChange={(e) => setSDate(e.target.value)} />
-            <TextInput type="text" label="End Date: " value={eDate} placeholder="yyyy-mm-dd" onChange={(e) => setEDate(e.target.value)} />
-            <TextArea type="text" label="Description: " value={description} placeholder="Enter Event Description" onChange={(e) => setDescription(e.target.value)} />
-            <Select
-              label="Category: "
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              options={['Event', 'Deadline']}
-            />
+            <Box align="center" justify="center" gap="xsmall">
+              <TextInput type="text" label="Title: " value={title} placeholder="Enter Title" required onChange={(e) => setTitle(e.target.value)} />
+              <TextInput type="text" label="Start Date: " value={sDate} placeholder="Start Date (yyyy-mm-dd)" required onChange={(e) => setSDate(e.target.value)} />
+              <TextInput type="text" label="End Date: " value={eDate} placeholder="End Date (yyyy-mm-dd)" onChange={(e) => setEDate(e.target.value)} />
+              <TextArea type="text" label="Description: " value={description} placeholder="Enter Description" onChange={(e) => setDescription(e.target.value)} />
+              <Select
+                label="Category: "
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                options={['Event', 'Deadline']}
+              />
 
-            <Button type="submit" label="Add Event" primary />
+              <Button type="submit">
+                <Box direction="row" gap="xsmall" alignSelf="end" align="center" justify="center">
+                  <Text color="purple">Add to Agenda</Text>
+                  {' '}
+                  <ScheduleNew color="purple" />
+                </Box>
+              </Button>
             </Box>
           </Form>
         </Box>
