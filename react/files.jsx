@@ -57,7 +57,7 @@ export default function Files() {
       {fileList.length ? (
         <List
           primaryKey={(file) => file.name.replace(`Project_${params.projectID}_`, '')}
-        // eslint-disable-next-line react/no-unstable-nested-components
+          // eslint-disable-next-line react/no-unstable-nested-components
           secondaryKey={(file) => <FileImage filetype={file.type} />}
           data={fileList}
           onClickItem={({ item }) => {
