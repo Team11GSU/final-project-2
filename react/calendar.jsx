@@ -80,18 +80,22 @@ export default function Calendar() {
     setCategory('Event');
   }
 
+  // Function to display the details of the clicked event using a window alert
   function show(info) {
     alert(`Details: \n Title: ${info.event.title
-    }\n Description: ${info.event.extendedProps.description
-    }\n Start Date: ${info.event.start
-    }\n End Date: ${info.event.end
-    }\n Category: ${info.event.extendedProps.category}`);
+      }\n Description: ${info.event.extendedProps.description
+      }\n Start Date: ${info.event.start
+      }\n End Date: ${info.event.end
+      }\n Category: ${info.event.extendedProps.category}`);
   }
 
+  // Checks for the 'category' of an event and assigns the corresponding color to be displayed on the calendar
   function colorCode(arg) {
     if (arg.event.extendedProps.category === 'Event') {
+      // Events are colored green
       arg.el.style.backgroundColor = '#059849';
     } else {
+      // Deadlines are colored red
       arg.el.style.backgroundColor = '#980505';
     }
   }
@@ -122,19 +126,19 @@ export default function Calendar() {
             On submission, having clicked the submit button, the handleSubmit
             function is called to handle that POST request */}
           <Form onSubmit={handleSubmit}>
-          <Box align="center" justify="center" gap='xsmall'>
-            <TextInput type="text" label="Title: " value={title} placeholder="Enter Title" required onChange={(e) => setTitle(e.target.value)} />
-            <TextInput type="text" label="Start Date: " value={sDate} placeholder="yyyy-mm-dd" required onChange={(e) => setSDate(e.target.value)} />
-            <TextInput type="text" label="End Date: " value={eDate} placeholder="yyyy-mm-dd" onChange={(e) => setEDate(e.target.value)} />
-            <TextArea type="text" label="Description: " value={description} placeholder="Enter Event Description" onChange={(e) => setDescription(e.target.value)} />
-            <Select
-              label="Category: "
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              options={['Event', 'Deadline']}
-            />
+            <Box align="center" justify="center" gap='xsmall'>
+              <TextInput type="text" label="Title: " value={title} placeholder="Enter Title" required onChange={(e) => setTitle(e.target.value)} />
+              <TextInput type="text" label="Start Date: " value={sDate} placeholder="yyyy-mm-dd" required onChange={(e) => setSDate(e.target.value)} />
+              <TextInput type="text" label="End Date: " value={eDate} placeholder="yyyy-mm-dd" onChange={(e) => setEDate(e.target.value)} />
+              <TextArea type="text" label="Description: " value={description} placeholder="Enter Event Description" onChange={(e) => setDescription(e.target.value)} />
+              <Select
+                label="Category: "
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                options={['Event', 'Deadline']}
+              />
 
-            <Button type="submit" label="Add Event" primary />
+              <Button type="submit" label="Add Event" primary />
             </Box>
           </Form>
         </Box>

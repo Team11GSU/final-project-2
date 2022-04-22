@@ -4,6 +4,7 @@ import {
 } from 'grommet';
 
 export default function Members({ projData }) {
+  //Displays the names of all of the members of the project along with their e-mail address
   return (
     <Box width="large" pad="xsmall">
       <Table width="medium">
