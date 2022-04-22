@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable no-alert */
 import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -5,7 +7,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Box, Avatar, Header, Text, Grid, Button,
 } from 'grommet';
-import { Logout, UserSettings } from 'grommet-icons';
+import {
+  Logout, User, Projects, Inbox, Schedule,
+} from 'grommet-icons';
 import useUser from './utils/useUser';
 import CreateProject from './createproject';
 
@@ -77,7 +81,7 @@ export default function UserProfile() {
           <>
             <Link to="/profile">
               <Box direction="row" gap="small" align="center" justify="center">
-                <UserSettings size="medium" />
+                <User size="medium" />
                 <Avatar src={userData.google_data.picture} />
               </Box>
             </Link>
@@ -101,7 +105,11 @@ export default function UserProfile() {
         <Grid columns={['medium', 'large']} gap="large">
           <Box justify="center" pad="small" border round gap="small">
             <Box align="left" justify="center" border round pad="medium">
-              <h2>Your Projects</h2>
+              <h2>
+                <Projects color="accent-1" />
+                {' '}
+                Your Projects
+              </h2>
               {projData.map((project) => (
                 <Link key={project.project_id} to={`/project/${project.project_id}`}>
                   <h3>{project.name}</h3>
@@ -110,8 +118,16 @@ export default function UserProfile() {
               ))}
             </Box>
             <Box align="left" justify="center" border round pad="medium">
+
               {/* Area designated for pending invites, onclick the invite is accepted and the user is redirected to that project page */}
               <h2>Your Invites</h2>
+
+              <h2>
+                <Inbox color="accent-3" />
+                {' '}
+                Your Invites
+              </h2>
+
               {invites.length > 0 ? invites.map((invite) => (
                 <Button
                   key={invite.id}
@@ -131,7 +147,11 @@ export default function UserProfile() {
             <CreateProject />
           </Box>
           <Box>
-            <h2>Your Calendar</h2>
+            <h2>
+              <Schedule color="accent-2" />
+              {' '}
+              Your Calendar
+            </h2>
             <FullCalendar
               plugins={[dayGridPlugin]}
               initialView="dayGridMonth"

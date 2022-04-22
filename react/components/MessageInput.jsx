@@ -2,8 +2,9 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-  Box, Button, Form, FormField, TextArea,
+  Box, Button, Form, FormField, TextArea, Text,
 } from 'grommet';
+import { Send } from 'grommet-icons';
 
 function NewMessage({ socket }) {
   const params = useParams();
@@ -45,7 +46,13 @@ function NewMessage({ socket }) {
               placeholder="Type your message here, you can use *Markdown*!"
             />
           </FormField>
-          <Button type="submit" label="Send" primary />
+          <Button type="submit">
+            <Box direction="row" gap="xsmall" alignSelf="end" align="center" justify="center">
+              <Text color="blue">Send</Text>
+              {' '}
+              <Send color="blue" />
+            </Box>
+          </Button>
         </Box>
       </Form>
     </Box>
