@@ -53,7 +53,7 @@ function TodoContainer() {
        If there are no todo items currently, a message is displayed to indicate that
        This is also where the handleDelete and handleClick functions are called */ }
       {todoList.length > 0
-        ? <h1>Project Todos</h1>
+        ? <h1>To-do List</h1>
         : <h1>This project has no to-dos currently...</h1>}
       {todoList.map(
         (todo) => (
