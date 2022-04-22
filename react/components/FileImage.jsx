@@ -11,6 +11,8 @@ import {
   TextAlignFull,
 } from 'grommet-icons';
 
+//Icon is assigned to files depending on the extension type / file type
+
 export default function FileImage({ filetype }) {
   if (filetype.includes('openxmlformats-officedocument.presentationml')) {
     return <DocumentPpt />;
