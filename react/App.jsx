@@ -23,6 +23,8 @@ export default function App() {
         setProjData(pdata);
       });
   }, []);
+
+  //Form to handle sending invites to other people to join the project via e-mail
   const InviteForm = useCallback(() => (
     <Box pad="large" background="light-2">
       <Form
@@ -78,18 +80,21 @@ export default function App() {
           </>
         )}
         <h1>{projData.name}</h1>
+        {/* Clickable icons that redirect the user to the appropriate page of the project */}
         <Nav direction="row" pad="medium" gap="medium">
           <NavLink to={`/project/${params.projectID}/chat`}><ChatOption /></NavLink>
           <Link to={`/project/${params.projectID}/calendar`}><Calendar /></Link>
           <Link to={`/project/${params.projectID}/todo`}><Task /></Link>
           <Link to={`/project/${params.projectID}/files`}><CloudDownload /></Link>
         </Nav>
+        {/*Drop down menu to display the members of the project */}
         <DropButton
           dropContent={<Members projData={projData.members} />}
           dropAlign={{ top: 'bottom' }}
         >
           <Group />
         </DropButton>
+        {/* Drop down menu that shows the form used to send an invite to a new member */}
         <DropButton
           dropContent={<InviteForm />}
           dropAlign={{ top: 'bottom' }}
@@ -98,7 +103,6 @@ export default function App() {
         </DropButton>
         <a aria-label="logout" href="/logout"><Logout color="red" /></a>
       </Header>
-      {/* Clickable links that take the user to the corresponding pages */}
       <Box pad={{ vertical: 'xsmall', horizontal: 'xlarge' }}>
         <Outlet />
       </Box>

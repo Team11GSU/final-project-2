@@ -146,7 +146,9 @@ def calendar(project_id):
 @api.route("/getUserEvents")
 def userEvents():
     "user events for calendar"
-
+    # Create a list of project IDs that the current use is a member of
+    # For each Project ID in the list, the Event table is queried to return all events
+    # the current user is a member of
     user_projects = list(map(lambda x: x.id, current_user.projects))
     print("user+pro", user_projects)
     events = []
@@ -172,12 +174,11 @@ def userEvents():
 @api.route("/getUserProjects")
 def userProjects():
     "user projects"
+
+    # Returns a dictionary of project data for all projects that the current user is a member of
     return jsonify(
         [
-            {
-                "name": project.name,
-                "project_id": project.id,
-            }
+            {"name": project.name, "project_id": project.id,}
             for project in current_user.projects
         ]
     )
@@ -186,6 +187,8 @@ def userProjects():
 @api.route("/getUserInvites")
 def getUserInvites():
     "user invites"
+
+    # Query the Invite table of the database to find pending invites for the current user
     invites = Invite.query.filter_by(email=current_user.email).all()
     return jsonify(
         [
@@ -199,9 +202,13 @@ def getUserInvites():
         ]
     )
 
+
 @api.route("/accept/<project_id>")
 def accept_invite(project_id):
     "user invites"
+
+    # Upon accepting a project invite, said invite is removed from the table
+    # The user is added as a member of the relevant project
     print("here", project_id, flush=True)
     db.session.begin()
     Invite.query.filter_by(email=current_user.email, project_id=project_id).delete()
@@ -216,6 +223,7 @@ def accept_invite(project_id):
 def get_project_data(project_id):
     "project data"
 
+    # Query the Project table to find all members of a project and returns their e-mail and names
     project = Project.query.filter_by(id=project_id).first()
     members = list(filter(lambda x: x.email, project.members))
 
@@ -223,11 +231,7 @@ def get_project_data(project_id):
         {
             "name": project.name,
             "members": [
-                {
-                    "name": member.name,
-                    "email": member.email,
-                }
-                for member in members
+                {"name": member.name, "email": member.email,} for member in members
             ],
         }
     )
@@ -236,6 +240,10 @@ def get_project_data(project_id):
 @api.route("/createproject", methods=["POST"])
 def create_project():
     "create project"
+
+    # POST request is used to get Project Name
+    # Checks if the Project already exists by querying for a matching name
+    # If it does not exist, a new Project is created and the current user is added as a member
     data = request.get_json()
     db.session.begin()
     project = Project.query.filter_by(name=data["name"]).first()
@@ -316,22 +324,26 @@ mail = Mail()
 
 BASE_URL = "https://dynamico-2.herokuapp.com"
 
+
 @api.route("/email", methods=["POST"])
 def send_email():
     "sends an email"
+
+    # Checks if there is a pending invite sent to a certain user
+    # if there is not an e-mail is sent inviting them to join the corresponding project
     data = request.json
     subject = f"You have been invited by {current_user.name} to Dynamico!"
     sender = os.getenv("MAIL_USERNAME")
     recipient = data["email"]
-    invite = Invite.query.filter_by(email=recipient, project_id=int(data["project"])).first()
+    invite = Invite.query.filter_by(
+        email=recipient, project_id=int(data["project"])
+    ).first()
     if not invite:
         db.session.begin()
         project = Project.query.filter_by(id=int(data["project"])).first()
-        project_name=project.name
+        project_name = project.name
         invite = Invite(
-            email=recipient,
-            invited_by=current_user.name,
-            project_name=project_name,
+            email=recipient, invited_by=current_user.name, project_name=project_name,
         )
         project.invites.append(invite)
         db.session.commit()
@@ -352,18 +364,14 @@ def files_list(project_id):
     "generates presigned s3 url to save file to"
     S3_BUCKET = "team11-finalproject-dynamico"
     # AWS_REGION = "us-east-1"
-
+    # Query the File table for all files shared in a project and returns them to be displayed
     files = File.query.filter_by(project_id=project_id).all()
 
     return jsonify(
         {
             "url": f"https://{S3_BUCKET}.s3.amazonaws.com/",
             "files": [
-                {
-                    "id": file.id,
-                    "name": file.file_name,
-                    "type": file.file_type,
-                }
+                {"id": file.id, "name": file.file_name, "type": file.file_type,}
                 for file in files
             ],
         }
@@ -373,6 +381,8 @@ def files_list(project_id):
 @api.route("/<project_id>/s3/sign")
 def presigned_route(project_id):
     "generates presigned s3 url to save file to"
+    # Takes the supplied file stores it with AWS S3
+    # Appends the file to the proper project
     S3_BUCKET = "team11-finalproject-dynamico"
 
     file_name = request.args.get("filename")
