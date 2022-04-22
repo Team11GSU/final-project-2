@@ -81,18 +81,22 @@ export default function Calendar() {
     setCategory('Event');
   }
 
+  // Function to display the details of the clicked event using a window alert
   function show(info) {
     alert(`Details: \n Title: ${info.event.title
-    }\n Description: ${info.event.extendedProps.description
-    }\n Start Date: ${info.event.start
-    }\n End Date: ${info.event.end
-    }\n Category: ${info.event.extendedProps.category}`);
+      }\n Description: ${info.event.extendedProps.description
+      }\n Start Date: ${info.event.start
+      }\n End Date: ${info.event.end
+      }\n Category: ${info.event.extendedProps.category}`);
   }
 
+  // Checks for the 'category' of an event and assigns the corresponding color to be displayed on the calendar
   function colorCode(arg) {
     if (arg.event.extendedProps.category === 'Event') {
+      // Events are colored green
       arg.el.style.backgroundColor = '#059849';
     } else {
+      // Deadlines are colored red
       arg.el.style.backgroundColor = '#980505';
     }
   }
