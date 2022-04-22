@@ -205,8 +205,7 @@ def getUserInvites():
 
 @api.route("/accept/<project_id>")
 def accept_invite(project_id):
-    "user invites"
-
+    "accept user invites"
     # Upon accepting a project invite, said invite is removed from the table
     # The user is added as a member of the relevant project
     print("here", project_id, flush=True)
@@ -215,6 +214,15 @@ def accept_invite(project_id):
     project = Project.query.filter_by(id=project_id).first()
     project.members.append(current_user)
     print(project.members, flush=True)
+    db.session.commit()
+    return jsonify({"success": True})
+
+@api.route("/decline/<project_id>")
+def decline_invite(project_id):
+    "decline user invites"
+    print("here", project_id, flush=True)
+    db.session.begin()
+    Invite.query.filter_by(email=current_user.email, project_id=project_id).delete()
     db.session.commit()
     return jsonify({"success": True})
 
