@@ -1,8 +1,9 @@
+/* eslint-disable no-alert */
 import {
-  Box, Nav, Form, FormField, TextInput, Button, Avatar, Header, DropButton,
+  Box, Nav, Form, FormField, TextInput, Button, Avatar, Header, DropButton, Text,
 } from 'grommet';
 import {
-  UserAdd, Logout, ChatOption, Calendar, Task, CloudDownload, Group, UserSettings,
+  UserAdd, Logout, ChatOption, Calendar, Task, CloudDownload, Group, User, MailOption,
 } from 'grommet-icons';
 import {
   Outlet, Link, NavLink, useParams,
@@ -40,11 +41,17 @@ export default function App() {
           }).then(() => alert('Email will be sent.'));
         }}
       >
-        <FormField name="email" htmlFor="text-input-id" label="Send an email to invite a friend">
-          <TextInput id="text-input-id" name="email" />
+        <FormField name="email" htmlFor="text-input-id" label="Invite a friend">
+          <TextInput id="text-input-id" name="email" required />
         </FormField>
         <Box direction="row" gap="medium">
-          <Button type="submit" primary label="Submit" />
+          <Button type="submit">
+            <Box direction="row" gap="xsmall" alignSelf="end" align="center" justify="center">
+              <Text color="brand">Send Email</Text>
+              {' '}
+              <MailOption color="brand" />
+            </Box>
+          </Button>
         </Box>
       </Form>
     </Box>
@@ -68,7 +75,7 @@ export default function App() {
           <>
             <Link to="/profile">
               <Box direction="row" gap="small" align="center" justify="center">
-                <UserSettings size="medium" />
+                <User size="medium" />
                 <Avatar src={userData.google_data.picture} />
               </Box>
             </Link>
