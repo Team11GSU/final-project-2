@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, Blueprint
+from flask import Flask, render_template
 
 # from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -67,15 +67,15 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-# @app.errorhandler(Exception)
-# def handle_error(error):
-#     "error handler"
-#     code = 500
-#     if isinstance(error, HTTPException):
-#         code = error.code
-#         if code == 404:
-#             return render_template("index.html"), 404
-#     return render_template("index.html"), code
+@app.errorhandler(Exception)
+def handle_error(error):
+    "error handler"
+    code = 500
+    if isinstance(error, HTTPException):
+        code = error.code
+        if code == 404:
+            return render_template("index.html"), 404
+    return render_template("index.html"), code
 
 
 db.init_app(app)

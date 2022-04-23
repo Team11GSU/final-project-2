@@ -1,7 +1,7 @@
-from unittest import TestCase, main
+from unittest import TestCase, main, mock
 from server.sockets_api import socketio
 from app import app
-from server.models import Message
+from server.models import Message, Event, Project
 from server.sockets_api import message_to_dict
 
 
@@ -24,6 +24,67 @@ class TestSockets(TestCase):
         client1.emit("test_message", "hello")
         recieved = client1.get_received()
         self.assertEqual(len(recieved), 1)
+
+
+class MockedTests(TestCase):
+    "tests API calls"
+
+    @mock.patch("server.api.current_user")
+    def test_user_projects(self, test_user):
+        "calendar test"
+        tester = app.test_client(self)
+        test_user.projects = [
+            Project(name="a", id=1),
+            Project(name="b", id=2),
+            Project(name="c", id=3),
+        ]
+        resp = tester.get("/getUserProjects")
+        self.assertEqual(
+            resp.json,
+            [
+                {
+                    "name": "a",
+                    "project_id": 1,
+                },
+                {
+                    "name": "b",
+                    "project_id": 2,
+                },
+                {
+                    "name": "c",
+                    "project_id": 3,
+                },
+            ],
+        )
+
+    @mock.patch("server.api.Event")
+    def test_calendar(self, mock_event):
+        "calendar test"
+        tester = app.test_client(self)
+        mock_event.query.filter_by(project_id=1).all.return_value = [
+            Event(
+                title="title",
+                description="description",
+                sDate="sDate",
+                eDate="eDate",
+                category="category",
+                user="user",
+            )
+        ]
+        resp = tester.get("/1/getEvent")
+        self.assertEqual(
+            resp.json,
+            [
+                {
+                    "title": "title",
+                    "description": "description",
+                    "sDate": "sDate",
+                    "eDate": "eDate",
+                    "category": "category",
+                    "user": "user",
+                }
+            ],
+        )
 
 
 class UnmockedTests(TestCase):

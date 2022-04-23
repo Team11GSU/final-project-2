@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
 
 const useUser = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -17,7 +16,7 @@ const useUser = () => {
       setIsLoading(false);
     }
   };
-  useEffect(() => fetchFn(), []);
+  useEffect(() => { fetchFn(); }, []);
   return { isLoading, userData };
 };
 

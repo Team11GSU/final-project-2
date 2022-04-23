@@ -1,7 +1,6 @@
-/* eslint-disable react/prop-types */
 import { FileInput, Heading, List } from 'grommet';
 import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import FileImage from './components/FileImage';
 
 export default function Files() {
@@ -17,6 +16,7 @@ export default function Files() {
   useEffect(() => {
     fetchList();
   }, []);
+  const fileImage = useCallback((file) => <FileImage filetype={file.type} />, []);
 
   const getSignedURL = async (event) => {
     try {
@@ -57,8 +57,7 @@ export default function Files() {
       {fileList.length ? (
         <List
           primaryKey={(file) => file.name.replace(`Project_${params.projectID}_`, '')}
-          // eslint-disable-next-line react/no-unstable-nested-components
-          secondaryKey={(file) => <FileImage filetype={file.type} />}
+          secondaryKey={fileImage}
           data={fileList}
           onClickItem={({ item }) => {
             window.open(bucketURL + item.name, '_blank');

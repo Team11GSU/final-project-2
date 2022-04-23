@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-/* eslint-disable no-alert */
+
 import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -11,16 +11,20 @@ import {
   Logout, User, Projects, Inbox, Schedule,
 } from 'grommet-icons';
 import useUser from './utils/useUser';
-import CreateProject from './createproject';
+import CreateProject from './components/createproject';
+import LoadingScreen from './components/LoadingScreen';
+import CalendarAlert from './components/calendarAlert';
 
 export default function UserProfile() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [projData, setProjData] = useState([]);
   const [invites, setInvites] = useState([]);
-  const { userData } = useUser();
+  const [showEvent, setShow] = useState(false);
+  const [eventData, setEventData] = useState({});
 
-  // useEffect is used to continuously get all of the events from projects that the current user is member of
+  // useEffect is used to continuously get all of the
+  // events from projects that the current user is member of
   useEffect(() => {
     fetch('/getUserEvents')
       .then((response) => response.json())
@@ -37,7 +41,8 @@ export default function UserProfile() {
       });
   }, []);
 
-  //Similar usage of useEffect is employed to retrieve a list of all projects the user is a member of 
+  // Similar usage of useEffect is employed to
+  // retrieve a list of all projects the user is a member of
   useEffect(() => {
     fetch('/getUserProjects')
       .then((response) => response.json())
@@ -47,7 +52,7 @@ export default function UserProfile() {
       });
   }, []);
 
-  //Similar usage to retrieve all of the user's pending invites to other projects
+  // Similar usage to retrieve all of the user's pending invites to other projects
   useEffect(() => {
     fetch('/getUserInvites')
       .then((response) => response.json())
@@ -57,19 +62,33 @@ export default function UserProfile() {
       });
   }, []);
 
+  const { isLoading, userData } = useUser();
+
+  if (isLoading) {
+    // While the page checks for a logged in user it displays a
+    // 'loading' message to indicate that it is in the process
+    return (
+      <LoadingScreen />
+    );
+  }
+
   function show(info) {
-    alert(`Details: \n Title: ${info.event.title
-      }\n Description: ${info.event.extendedProps.description
-      }\n Start Date: ${info.event.start
-      }\n End Date: ${info.event.end
-      }\n Category: ${info.event.extendedProps.category
-      }\n ProjectID: ${info.event.extendedProps.projectID}`);
+    setEventData({
+      Title: info.event.title,
+      Description: info.event.extendedProps.description,
+      StartDate: info.event.start.toLocaleDateString(),
+      EndDate: info.event.end?.toLocaleDateString(),
+      Category: info.event.extendedProps.category,
+    });
+    setShow(true);
   }
 
   function colorCode(arg) {
     if (arg.event.extendedProps.category === 'Event') {
+      // eslint-disable-next-line no-param-reassign
       arg.el.style.backgroundColor = '#059849';
     } else {
+      // eslint-disable-next-line no-param-reassign
       arg.el.style.backgroundColor = '#980505';
     }
   }
@@ -119,8 +138,8 @@ export default function UserProfile() {
             </Box>
             <Box align="left" justify="center" border round pad="medium">
 
-              {/* Area designated for pending invites, onclick the invite is accepted and the user is redirected to that project page */}
-              <h2>Your Invites</h2>
+              {/* Area designated for pending invites, onclick the invite is accepted
+                and the user is redirected to that project page */}
 
               <h2>
                 <Inbox color="accent-3" />
@@ -136,7 +155,7 @@ export default function UserProfile() {
                     navigate(`/project/${invite.project_id}`);
                   }}
                 >
-                  {invite.project_name}
+                  <b>{invite.project_name}</b>
                   {' '}
                   by
                   {' '}
@@ -165,6 +184,7 @@ export default function UserProfile() {
           </Box>
         </Grid>
       </Box>
+      {showEvent && <CalendarAlert data={eventData} setError={setShow} />}
     </Box>
   );
 }

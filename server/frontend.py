@@ -3,6 +3,7 @@ from flask_login import current_user
 
 frontend = Blueprint("frontend", __name__, template_folder="templates")
 
+
 @frontend.route("/")
 @frontend.route("/landingPage")
 def landing_page():
@@ -10,6 +11,7 @@ def landing_page():
     if current_user.is_authenticated:
         return redirect("/profile")
     return render_template("landingPage.html")
+
 
 @frontend.route("/loginform")
 @frontend.route("/profile")

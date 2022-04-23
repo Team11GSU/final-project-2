@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href={{url_for("static", filename='css/calendar.css')}}>
-    <link rel="stylesheet" href={{url_for("static", filename='css/daygrid.css')}}>
+    <link rel="stylesheet" href={{url_for("static", filename='css/calendar.css' )}}>
+    <link rel="stylesheet" href={{url_for("static", filename='css/daygrid.css' )}}>
+    <link rel="icon" href={{url_for("static", filename='images/projects.ico' )}} type="image/x-icon">
+    <meta property="og:description" content="Dynamico is the only college project management tool you need, with chat, to-do list, calendar,
+    and file sharing features all in one place. Start a project and invite your friends today!">
+    <meta property="og:title" content="Dynamico">
     <title>Dynamico</title>
 </head>
+
 <body>
     <div id="react"></div>
-    <script type="module"  src={{url_for("static", filename='js/index.js')}} defer></script>
+    <script type="module" src={{url_for("static", filename='js/index.js' )}} defer></script>
 </body>
+
 </html>
