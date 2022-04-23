@@ -35,7 +35,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL").replace(
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = os.getenv("SECRET_KEY")
 
-S3_BUCKET = "team11-finalproject-dynamico"
+S3_BUCKET = os.getenv("S3_BUCKET")
 AWS_REGION = "us-east-1"
 app.config["S3_BUCKET"] = S3_BUCKET
 app.config["AWS_ACCESS_KEY_ID'"] = os.getenv("AWS_ACCESS_KEY_ID")

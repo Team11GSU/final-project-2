@@ -10,6 +10,8 @@ import boto3
 # from server.gmail import create_service
 from server.models import Invite, Project, Todo, db, Event, File
 
+S3_BUCKET = os.getenv("S3_BUCKET")
+
 # CLIENT_SECRET_FILE = "server/credentials.json"
 # API_NAME = "gmail"
 # API_VERSION = "v1"
@@ -373,7 +375,6 @@ def send_email():
 @api.route("/<project_id>/s3/list")
 def files_list(project_id):
     "generates presigned s3 url to save file to"
-    S3_BUCKET = "team11-finalproject-dynamico"
     # AWS_REGION = "us-east-1"
     # Query the File table for all files shared in a project and returns them to be displayed
     files = File.query.filter_by(project_id=project_id).all()
@@ -398,7 +399,6 @@ def presigned_route(project_id):
     "generates presigned s3 url to save file to"
     # Takes the supplied file stores it with AWS S3
     # Appends the file to the proper project
-    S3_BUCKET = "team11-finalproject-dynamico"
 
     file_name = request.args.get("filename")
     file_type = request.args.get("filetype")
