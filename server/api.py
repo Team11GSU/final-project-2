@@ -202,6 +202,7 @@ def accept_invite(project_id):
     db.session.commit()
     return jsonify({"success": True})
 
+
 @api.route("/decline/<project_id>")
 def decline_invite(project_id):
     "decline user invites"
