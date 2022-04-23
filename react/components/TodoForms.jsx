@@ -1,10 +1,10 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Button, Form, TextInput, Box, Text,
 } from 'grommet';
 import { Edit } from 'grommet-icons';
+import PropTypes from 'prop-types';
 // This files uses the same fetch POST convention as other files to
 // send the todo items to the database when they are submitted
 function TodoForms({ setTodoList }) {
@@ -59,5 +59,9 @@ function TodoForms({ setTodoList }) {
 
   );
 }
+
+TodoForms.propTypes = {
+  setTodoList: PropTypes.func.isRequired,
+};
 
 export default TodoForms;

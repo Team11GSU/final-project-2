@@ -1,5 +1,4 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable no-alert */
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/jsx-no-bind */
 import React, { useEffect, useState } from 'react';
 import {
@@ -9,11 +8,16 @@ import { useParams } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { ScheduleNew } from 'grommet-icons';
+import ErrorAlert from './components/errorAlert';
+import CalendarAlert from './components/calendarAlert';
 
 export default function Calendar() {
   /* useParams is used to ensure that the calendar
       that is displayed matches that of the projectID that is passed in the endpoint */
   const params = useParams();
+  const [error, setError] = useState(false);
+  const [showEvent, setShow] = useState(false);
+  const [eventData, setEventData] = useState({});
 
   /* useState is used so that our variable are preserved through the application
       and also serves to set the appropriate data into its respective variable */
@@ -65,7 +69,7 @@ export default function Calendar() {
       .then((response) => response.json())
       .then((cdata) => {
         // console.log(data);
-        alert('New Event Saved!');
+        setError(true);
         setData(cdata.map((elem) => ({
           title: elem.title,
           start: elem.sDate,
@@ -83,14 +87,18 @@ export default function Calendar() {
 
   // Function to display the details of the clicked event using a window alert
   function show(info) {
-    alert(`Details: \n Title: ${info.event.title
-      }\n Description: ${info.event.extendedProps.description
-      }\n Start Date: ${info.event.start
-      }\n End Date: ${info.event.end
-      }\n Category: ${info.event.extendedProps.category}`);
+    setEventData({
+      Title: info.event.title,
+      Description: info.event.extendedProps.description,
+      StartDate: info.event.start.toLocaleDateString(),
+      EndDate: info.event.end?.toLocaleDateString(),
+      Category: info.event.extendedProps.category,
+    });
+    setShow(true);
   }
 
-  // Checks for the 'category' of an event and assigns the corresponding color to be displayed on the calendar
+  // Checks for the 'category' of an event and assigns
+  // the corresponding color to be displayed on the calendar
   function colorCode(arg) {
     if (arg.event.extendedProps.category === 'Event') {
       // Events are colored green
@@ -150,7 +158,8 @@ export default function Calendar() {
           </Form>
         </Box>
       </Grid>
-
+      {error && <ErrorAlert message="New Event Saved!" setError={setError} />}
+      {showEvent && <CalendarAlert data={eventData} setError={setShow} />}
     </Box>
 
   );

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import Messages from './components/Messages';
@@ -25,7 +24,8 @@ export default function Chat() {
           input and send it through socket.io */}
           <MessageInput socket={socket} />
         </div>
-        /* Message is displayed to indicate that the user is not connected to the socket.io server */
+        /* Message is displayed to indicate that the
+          user is not connected to the socket.io server */
       ) : <div>Not Connected!</div>}
     </>
   );
