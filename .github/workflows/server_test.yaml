@@ -1,0 +1,25 @@
+name: unittest
+on: [push, pull_request]
+
+env:
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  MAIL_USERNAME : ${{ secrets.MAIL_USERNAME }}
+  MAIL_PASSWORD : ${{ secrets.MAIL_PASSWORD }}
+
+jobs:
+  on_build_actions:
+    environment: CI 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          cd $GITHUB_WORKSPACE
+          pip install -r requirements.txt
+      - name: Run Tests    
+        run: python -m unittest tests.py
