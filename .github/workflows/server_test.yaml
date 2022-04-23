@@ -6,6 +6,10 @@ env:
   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AKIA3GXAG2P4OKNWIJRY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.ERm5uvMG4tTt8aKaZn3Dhgz5UC4jhURKAhG1fvQn }}
+  MAIL_USERNAME : ${{ secrets. 'dynamico.dnmc@gmail.com' }}
+  MAIL_PASSWORD : ${{ secrets. 'team11isTheBEST' }}
 
 jobs:
   on_build_actions:
