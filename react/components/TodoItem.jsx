@@ -1,9 +1,9 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import {
   CheckBox, Text, Box, Button,
 } from 'grommet';
 import { Erase } from 'grommet-icons';
+import PropTypes from 'prop-types';
 
 function TodoTask({ todo, deleteTodo, handleChange }) {
   const handleClick = () => {
@@ -26,5 +26,15 @@ function TodoTask({ todo, deleteTodo, handleChange }) {
     </Box>
   );
 }
+
+TodoTask.propTypes = {
+  todo: PropTypes.shape({
+    TaskName: PropTypes.string,
+    complete: PropTypes.bool,
+    id: PropTypes.number,
+  }).isRequired,
+  deleteTodo: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
+};
 
 export default TodoTask;

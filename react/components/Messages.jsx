@@ -1,9 +1,9 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Box, Grid, Avatar, Markdown, Text,
 } from 'grommet';
+import PropTypes from 'prop-types';
 // to be replaced with Grommet components later
 
 function Messages({ socket }) {
@@ -70,5 +70,13 @@ function Messages({ socket }) {
     </Box>
   );
 }
+
+Messages.propTypes = {
+  socket: PropTypes.shape({
+    on: PropTypes.func,
+    emit: PropTypes.func,
+    off: PropTypes.func,
+  }).isRequired,
+};
 
 export default Messages;

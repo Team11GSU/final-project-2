@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import {
   Image,
   TextWrap,
@@ -10,8 +9,9 @@ import {
   DocumentExcel,
   TextAlignFull,
 } from 'grommet-icons';
+import PropTypes from 'prop-types';
 
-//Icon is assigned to files depending on the extension type / file type
+// Icon is assigned to files depending on the extension type / file type
 
 export default function FileImage({ filetype }) {
   if (filetype.includes('openxmlformats-officedocument.presentationml')) {
@@ -40,3 +40,7 @@ export default function FileImage({ filetype }) {
   }
   return <DocumentImage />;
 }
+
+FileImage.propTypes = {
+  filetype: PropTypes.string.isRequired,
+};

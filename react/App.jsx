@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 import {
   Box, Nav, Form, FormField, TextInput, Button, Avatar, Header, DropButton, Text,
 } from 'grommet';
@@ -8,24 +7,23 @@ import {
 import {
   Outlet, Link, NavLink, useParams,
 } from 'react-router-dom';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import useUser from './utils/useUser';
-import Members from './members';
+import Members from './components/members';
 import LoadingScreen from './components/LoadingScreen';
+import useProject from './utils/useProject';
+import ErrorAlert from './components/errorAlert';
+
+const activeStyle = 'violet';
 
 export default function App() {
-  const [email, setEmail] = useState({});
   const params = useParams();
-  const [projData, setProjData] = useState({});
-  useEffect(() => {
-    fetch(`/${params.projectID}/getProjectData`)
-      .then((response) => response.json())
-      .then((pdata) => {
-        setProjData(pdata);
-      });
-  }, []);
+  const { isLoading, userData } = useUser();
+  const [email, setEmail] = useState({});
+  const [error, setError] = useState(false);
+  const { projIsLoading, projectData } = useProject(params.projectID);
 
-  //Form to handle sending invites to other people to join the project via e-mail
+  // Form to handle sending invites to other people to join the project via e-mail
   const InviteForm = useCallback(() => (
     <Box pad="large" background="light-2">
       <Form
@@ -38,11 +36,14 @@ export default function App() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({ ...value, project: params.projectID }),
-          }).then(() => alert('Email will be sent.'));
+          }).then(() => {
+            setError(true);
+            setEmail('');
+          });
         }}
       >
         <FormField name="email" htmlFor="text-input-id" label="Invite a friend">
-          <TextInput id="text-input-id" name="email" required />
+          <TextInput type="email" id="text-input-id" name="email" required />
         </FormField>
         <Box direction="row" gap="medium">
           <Button type="submit">
@@ -56,10 +57,9 @@ export default function App() {
       </Form>
     </Box>
   ), []);
-  const { isLoading, userData } = useUser();
   // useParams is used to ensure that the pages that displayed correspond to
   // the current project that the user is operating in
-  if (isLoading) {
+  if (isLoading || projIsLoading) {
     // While the page checks for a logged in user it displays a
     // 'loading' message to indicate that it is in the process
     return (
@@ -86,17 +86,25 @@ export default function App() {
             </h3>
           </>
         )}
-        <h1>{projData.name}</h1>
+        <h1>{projectData.name}</h1>
         {/* Clickable icons that redirect the user to the appropriate page of the project */}
         <Nav direction="row" pad="medium" gap="medium">
-          <NavLink to={`/project/${params.projectID}/chat`}><ChatOption /></NavLink>
-          <Link to={`/project/${params.projectID}/calendar`}><Calendar /></Link>
-          <Link to={`/project/${params.projectID}/todo`}><Task /></Link>
-          <Link to={`/project/${params.projectID}/files`}><CloudDownload /></Link>
+          <NavLink to={`/project/${params.projectID}/chat`}>
+            {({ isActive }) => <ChatOption color={isActive ? activeStyle : undefined} />}
+          </NavLink>
+          <NavLink to={`/project/${params.projectID}/calendar`}>
+            {({ isActive }) => <Calendar color={isActive ? activeStyle : undefined} />}
+          </NavLink>
+          <NavLink to={`/project/${params.projectID}/todo`}>
+            {({ isActive }) => <Task color={isActive ? activeStyle : undefined} />}
+          </NavLink>
+          <NavLink to={`/project/${params.projectID}/files`}>
+            {({ isActive }) => <CloudDownload color={isActive ? activeStyle : undefined} />}
+          </NavLink>
         </Nav>
-        {/*Drop down menu to display the members of the project */}
+        {/* Drop down menu to display the members of the project */}
         <DropButton
-          dropContent={<Members projData={projData.members} />}
+          dropContent={<Members members={projectData.members} />}
           dropAlign={{ top: 'bottom' }}
         >
           <Group />
@@ -113,6 +121,7 @@ export default function App() {
       <Box pad={{ vertical: 'xsmall', horizontal: 'xlarge' }}>
         <Outlet />
       </Box>
+      {error && <ErrorAlert message="Email will be sent." setError={setError} />}
     </Box>
   );
 }

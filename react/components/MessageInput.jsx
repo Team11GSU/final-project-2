@@ -1,23 +1,22 @@
-/* eslint-disable react/prop-types */
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Box, Button, Form, FormField, TextArea, Text,
 } from 'grommet';
 import { Send } from 'grommet-icons';
+import PropTypes from 'prop-types';
 
 function NewMessage({ socket }) {
   const params = useParams();
   // Similar useState usage as with other files such as in calendar.jsx
   const [message, setMessage] = useState({});
-  const submitForm = ({ value }) => {
+  const submitForm = useCallback(({ value }) => {
     const msg = {
       message: value.message,
       project: params.projectID,
     };
     socket.emit('message', msg);
-    setMessage('');
-  };
+  }, []);
 
   return (
     // Form used to take the user's input and send it to the database via socket.io
@@ -58,5 +57,11 @@ function NewMessage({ socket }) {
     </Box>
   );
 }
+
+NewMessage.propTypes = {
+  socket: PropTypes.shape({
+    emit: PropTypes.func,
+  }).isRequired,
+};
 
 export default NewMessage;

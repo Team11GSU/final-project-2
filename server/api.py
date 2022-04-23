@@ -1,7 +1,7 @@
 # pylint: disable=invalid-name
 # pylint: disable=no-member
 import os
-from flask import Blueprint, jsonify, redirect, render_template, request, url_for
+from flask import Blueprint, jsonify, redirect, render_template, request
 from flask_login import current_user, logout_user
 from flask_dance.contrib.google import google
 from flask_mail import Mail, Message
@@ -34,28 +34,10 @@ def userdata():
     user_info_endpoint = "oauth2/v2/userinfo"
     if current_user.is_authenticated and google.authorized:
         google_data = google.get(user_info_endpoint).json()
-        # db.session.begin()
-        # project = Project.query.filter_by(name="dummy").first()
-        # this code creates a dummmy project if it doesn't exist
-        # and it adds new users to project if they aren't in
-        # if not project:
-        #     project = Project(name="dummy")
-        #     db.session.add(project)
-        # member = list(filter(lambda x: x.email == current_user.email, project.members))
-        # print(member, flush=True)
-        # if not member:
-        #     # print("here", flush=True)
-        #     project.members.append(current_user)
-        # user_projects = list(map(lambda x: x.id, current_user.projects))
-        # print(
-        # project.id, project.name, project.members, current_user.projects, flush=True
-        # )
-        # db.session.commit()
         return jsonify(
             logged_in=True,
             google_data=google_data,
             fetch_url=google.base_url + user_info_endpoint,
-            # user_projects=user_projects,
         )
     return jsonify(logged_in=False)
 
@@ -178,7 +160,10 @@ def userProjects():
     # Returns a dictionary of project data for all projects that the current user is a member of
     return jsonify(
         [
-            {"name": project.name, "project_id": project.id,}
+            {
+                "name": project.name,
+                "project_id": project.id,
+            }
             for project in current_user.projects
         ]
     )
@@ -230,16 +215,31 @@ def decline_invite(project_id):
 @api.route("/<project_id>/getProjectData")
 def get_project_data(project_id):
     "project data"
-
     # Query the Project table to find all members of a project and returns their e-mail and names
     project = Project.query.filter_by(id=project_id).first()
+    if not project:
+        return jsonify(
+            {
+                "projectExists": False,
+            }
+        )
     members = list(filter(lambda x: x.email, project.members))
-
+    if current_user not in members:
+        return jsonify(
+            {
+                "projectExists": False,
+            }
+        )
     return jsonify(
         {
+            "projectExists": True,
             "name": project.name,
             "members": [
-                {"name": member.name, "email": member.email,} for member in members
+                {
+                    "name": member.name,
+                    "email": member.email,
+                }
+                for member in members
             ],
         }
     )
@@ -351,7 +351,9 @@ def send_email():
         project = Project.query.filter_by(id=int(data["project"])).first()
         project_name = project.name
         invite = Invite(
-            email=recipient, invited_by=current_user.name, project_name=project_name,
+            email=recipient,
+            invited_by=current_user.name,
+            project_name=project_name,
         )
         project.invites.append(invite)
         db.session.commit()
@@ -379,7 +381,11 @@ def files_list(project_id):
         {
             "url": f"https://{S3_BUCKET}.s3.amazonaws.com/",
             "files": [
-                {"id": file.id, "name": file.file_name, "type": file.file_type,}
+                {
+                    "id": file.id,
+                    "name": file.file_name,
+                    "type": file.file_type,
+                }
                 for file in files
             ],
         }
