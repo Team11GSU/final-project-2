@@ -8,7 +8,7 @@ import {
   Box, Avatar, Header, Text, Grid, Button,
 } from 'grommet';
 import {
-  Logout, User, Projects, Inbox, Schedule,
+  Logout, User, Projects, Inbox, Schedule, FormCheckmark, FormClose,
 } from 'grommet-icons';
 import useUser from './utils/useUser';
 import CreateProject from './components/createproject';
@@ -148,19 +148,37 @@ export default function UserProfile() {
               </h2>
 
               {invites.length > 0 ? invites.map((invite) => (
-                <Button
-                  key={invite.id}
-                  onClick={async () => {
-                    await fetch(`/accept/${invite.project_id}`);
-                    navigate(`/project/${invite.project_id}`);
-                  }}
-                >
-                  <b>{invite.project_name}</b>
-                  {' '}
-                  by
-                  {' '}
-                  {invite.invited_by}
-                </Button>
+                <>
+                  <Box>
+                    <b>{invite.project_name}</b>
+                    <Text>
+                      from
+                      {' '}
+                      {invite.invited_by}
+                    </Text>
+                  </Box>
+                  <Box direction="row" gap="small" align="center" justify="center">
+                    <Button
+                      key={invite.id}
+                      onClick={async () => {
+                        await fetch(`/accept/${invite.project_id}`);
+                        navigate(`/project/${invite.project_id}`);
+                      }}
+                    >
+                      <FormCheckmark color="green" />
+                    </Button>
+                    <Button
+                      key={invite.id}
+                      onClick={async () => {
+                        await fetch(`/decline/${invite.project_id}`);
+                        window.location.reload(false);
+                      }}
+                    >
+                      <FormClose color="red" />
+                    </Button>
+                  </Box>
+
+                </>
               )) : <h3>You have no invites</h3>}
             </Box>
             <CreateProject />
